@@ -8,11 +8,11 @@ app.secret_key = 'ABC'
 
 @app.route('/')
 def open_singin_singup_page():
-    '''Show SingIn/SingUp page'''
+    '''Show SignIn/SignUp page'''
 
     print('opening signin page')
 
-    return render_template('singin_singup.html')
+    return render_template('signin_signup.html')
 
 @app.route('/homepage')
 def open_homepage():
