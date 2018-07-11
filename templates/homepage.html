@@ -1,6 +1,20 @@
 {% extends 'base.html' %}
 {% block title %} Movie Journal {% endblock %}
 {% block content %}
-here you will see 'Vew my journal' and 'Add movie to journal'
+<p><a href='/add-movie'>Add New Movie into Journal</a></p>
+<p><h2>My Watched Movies List</h2></p>
+<table>
+    <th>Movie Title</th>
+    <!-- <th>Genre</th> -->
+    <th>My Rating</th>
+    <!-- th>Review Date</th> -->
+    {% for movie in movies_ratings %}
+    <tr>
+        <td><a href='/movie-info?title = {{ movie[0].title }}'>{{ movie[0].title}} </td>
+        <td>{{ movie[1] }}</td>
+       
+    {% endfor %}
+</ul>
+
 
 {% endblock %}

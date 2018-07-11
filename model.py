@@ -20,12 +20,12 @@ class User(db.Model):
 
     def __repr__(self):
         '''Provides helpful representation when printed'''
-        return (f'<user_id = self.user_id>'
-                f'<login = self.login>'
-                f'<password = self.password>'
-                f'<fname = self.fname>'
-                f'<lname = self.lname>'
-                f'<email = self.email>')
+        return (f'<user_id = {self.user_id}, '
+                f'login = {self.login}, '
+                f'password = {self.password}, '
+                f'fname = {self.fname}, '
+                f'lname = {self.lname}, '
+                f'email = {self.email}>')
 
 class Movie(db.Model):
     '''Movies saved in Movie-Journal app'''
@@ -35,9 +35,9 @@ class Movie(db.Model):
     movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     imdb_id = db.Column(db.Integer, nullable=True)
     imdb_url = db.Column(db.String(150), nullable=True)
-    imdb_rating = db.Column(db.Integer, nullable=True)
+    imdb_rating = db.Column(db.Float, nullable=True)
     title = db.Column(db.String(100), nullable=False)
-    released_at = db.Column(db.DateTime, nullable=True)
+    usa_release_date = db.Column(db.Date, nullable=True)
     
     genres = db.relationship('Genre', 
                              secondary='movies_genres',
@@ -45,12 +45,12 @@ class Movie(db.Model):
 
     def __repr__(self):
         '''Provides helpful representation when printed'''
-        return (f'< movie_id = self.movie_id>'
-                f'<imdb_id = self.imdb_id>'
-                f'<imdb_url = self.imdb_url>'
-                f'<imdb_rating = self.imdb_rating>'
-                f'<title = self.title>'
-                f'<released_at = slf.released_at>')
+        return (f'< movie_id = {self.movie_id}, '
+                f'imdb_id = {self.imdb_id}, '
+                f'imdb_url = {self.imdb_url}, '
+                f'imdb_rating = {self.imdb_rating}, '
+                f'title = {self.title}, '
+                f'usa_release_date = {self.usa_release_date}>')
 
 class Review(db.Model):
     '''Users' reviews and ratings'''
@@ -64,7 +64,7 @@ class Review(db.Model):
                         db.ForeignKey('users.user_id'), nullable=False)
     review = db.Column(db.Text, nullable=True)
     rating = db.Column(db.Integer, nullable=True)
-    date_review = db.Column(db.DateTime, nullable=True)
+    date_review = db.Column(db.Date, nullable=True)
 
     movie = db.relationship('Movie', backref='reviews')
     user = db.relationship('User', backref='reviews')
@@ -74,12 +74,12 @@ class Review(db.Model):
     def __repr__(self):
         '''Provides helpful representation when printed'''
 
-        return (f'<review_id = self.review_id>'
-                f'<movie_id = self.movie_id>'
-                f'<user_id = self.user_id>'
-                f'<review = self.review>'
-                f'<rating = self.rating>'
-                f'<date_review = self.date_review>')
+        return (f'<review_id = {self.review_id}, '
+                f'movie_id = {self.movie_id}, '
+                f'user_id = {self.user_id}, '
+                f'review = {self.review}, '
+                f'rating = {self.rating}, '
+                f'date_review = {self.date_review}>')
 
 class Genre(db.Model):
     '''Movie genres'''
@@ -87,14 +87,14 @@ class Genre(db.Model):
     __tablename__ = 'genres'
 
     genre_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    genge_title = db.Column(db.String(20), nullable=False)
+    genre_title = db.Column(db.String(20), nullable=False)
     
 
     def __repr__(self):
 
-        return (f'<genre_id = self.genre_id>'
-                f'<genge_title = self.genge_title>'
-                f'<movie_id = self.movie_id>')
+        return (f'<genre_id = {self.genre_id}, '
+                f'genre_title = {self.genre_title}, '
+                f'movie_id =  {self.movie_id}>')
 
 
 class MovieGenre(db.Model):

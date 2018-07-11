@@ -4,6 +4,26 @@
     <title>{%block  title %} Title {% endblock %}</title>
 </head>
 <body>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+
+{% for message in messages %}
+<span>{{ message }} </span>
+{% endfor %}
+
+
+{% endif %}
+{% endwith %}
+
+
+{% if session %}
+<form action = "/logout">
+<input type='submit' value="Log Out">
+</form>
+
+{% endif %}
+
     {% block content%} body content {% endblock %}
 
 </body>
