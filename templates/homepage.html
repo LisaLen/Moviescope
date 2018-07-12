@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %} Movie Journal {% endblock %}
 {% block content %}
-<p><a href='/add-movie'>Add New Movie into Journal</a></p>
+<p><a href='/add-movie'>Add Movie to Journal</a></p>
 <p><h2>My Watched Movies List</h2></p>
 <table>
     <th>Movie Title</th>
@@ -12,9 +12,12 @@
     <tr>
         <td><a href='/movie-info?title = {{ movie[0].title }}'>{{ movie[0].title}} </td>
         <td>{{ movie[1] }}</td>
+    </tr>
        
     {% endfor %}
-</ul>
+    
+</table>
+
 
 
 {% endblock %}

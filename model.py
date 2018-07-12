@@ -12,7 +12,7 @@ class User(db.Model):
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    login = db.Column(db.String(68), nullable=False)
+    login = db.Column(db.String(68), nullable=False, unique=True)
     password = db.Column(db.String(24), nullable=False)
     fname = db.Column(db.String(32), nullable=True)
     lname = db.Column(db.String(40), nullable=True)
@@ -32,8 +32,8 @@ class Movie(db.Model):
 
     __tablename__ = 'movies'
 
-    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    imdb_id = db.Column(db.Integer, nullable=True)
+    movie_id = db.Column(db.Integer, autoincrement=True, primary_key=True, )
+    imdb_id = db.Column(db.String(10), nullable=True)
     imdb_url = db.Column(db.String(150), nullable=True)
     imdb_rating = db.Column(db.Float, nullable=True)
     title = db.Column(db.String(100), nullable=False)
