@@ -51,23 +51,23 @@ function showSearchResults(results){
 }
 
 function popUpMovieInformation(results) {
+    //sends selected movie informain to add-new-moview form
     console.log(results['Title']);
     $('#movietitle').val(results['Title']);
-    console.log($('#movietitle').val())
+    console.log($('#movietitle').val());
+    $('#imdbid').val([results['imdbID']]);
+    $('#imdb_rating').val(results['imdbRating']);
+    $('#released').val(results['Released']);
+    $('#genre').val(results['Genre']);
+    $('#plot').val(results['Plot']);
+    $('#movie_url').val([results['Website']]);
+    $('#poster_img').val(results['Poster']);
+    console.log($('#movie_url').val());
+    console.log($('#poster_img').val());
+
 
 }
 
-
-
-        // let movie = {title: result['Title'],
-        //          released: result['Released'],
-        //          genre: result['Genre'],
-        //          poster_url: result['Poster'],
-        //          imdb_rating: result['imdbRating'],
-        //          imdb_id: result['imdbID'],
-        //          movie_url: result['Website']};
-
-       
 
 function searchMovieByImdbID(evt){
     // search movie by ImdbID
@@ -81,7 +81,6 @@ function searchMovieByImdbID(evt){
     $.get(url, popUpMovieInformation)
     
 }
-
 
 
 

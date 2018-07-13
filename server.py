@@ -5,7 +5,7 @@ from flask import (Flask, request, render_template, redirect, flash, session)
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Movie, Review, Genre, MovieGenre
-from datetime import datetime
+import datetime
 
 app = Flask(__name__)
 
@@ -16,6 +16,7 @@ def open_singin_singup_page():
     '''Show SignIn/SignUp page'''
 
     return render_template('signin_signup.html')
+
 
 @app.route('/sign-in', methods=["POST"])
 def sin_in():
@@ -87,7 +88,7 @@ def register_new_user():
 @app.route('/homepage')
 def open_homepage():
     ''' Show homepage; show mivie list for a particular user'''
-    if session: 
+    if 'current_user' in session: 
                        
         #returns [(<Movie>, rating)]
         movies_ratings = db.session.query(Movie, Review.rating).join(Review).filter_by(user_id=session['current_user'])    
@@ -107,27 +108,55 @@ def link_to_add_movie():
 def add_new_movie():
     '''Add new movie, rating and review into journal'''
     movie_title = request.args.get('title')
+    imdb_id = request.args.get('imdbid')
+    imdb_rating = request.args.get('imdb_rating')
+    usa_release_date = request.args.get('released')
+    genre = request.args.get('genre')
+    plot = request.args.get('plot')
+    movie_url = request.args.get('movie_url')
+    poster_img = request.args.get('poster_img')
     rating = int(request.args.get('rating'))
     review = request.args.get('review')
-    #date = datetime.strptime(request.args.get('review_date'), '%d-%b-%Y')
-    print (movie_title, rating, review)
+
+    #review day is always current day
+    review_date = datetime.date.today().strftime("%d-%b-%Y")
+
+    print('###############################')
+    print('\n')
+    print('\n')
+
+    print('\n')
+
+
+
+    print (movie_title, imdb_id, imdb_rating, usa_release_date, 
+    genre, movie_url, plot, poster_img, rating, review, review_date)
+    print('\n')
+    print('\n')
+
+    print('\n')
+
+    print('\n')
+    print('###############################')
+    
     flash ('movie was added')
 
 
-    new_movie = Movie(title=movie_title)
-    db.session.add(new_movie) 
-    db.session.commit()
+    # new_movie = Movie(title=movie_title) 
 
-    print(new_movie.movie_id)
-    print(session['current_user'])
+    # db.session.add(new_movie) 
+    # db.session.commit()
 
-    new_review = Review(movie_id=new_movie.movie_id, 
-                        user_id=session['current_user'],
-                        review=review,
-                        rating=rating)
+    
+    print('current user id', session['current_user'])
 
-    db.session.add(new_review)
-    db.session.commit()
+    # new_review = Review(movie_id=new_movie.movie_id, 
+    #                     user_id=session['current_user'],
+    #                     review=review,
+    #                     rating=rating)
+
+    # db.session.add(new_review)
+    # db.session.commit()
 
     return redirect('homepage')
 

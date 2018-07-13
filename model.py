@@ -37,7 +37,9 @@ class Movie(db.Model):
     movie_url = db.Column(db.String(150), nullable=True)
     imdb_rating = db.Column(db.Float, nullable=True)
     title = db.Column(db.String(100), nullable=False)
+    plot = db.Column(db.Text, nullable=True)
     usa_release_date = db.Column(db.Date, nullable=True)
+    poster_img = db.Column(db.String(150), nullable=False, default='N/A')
     
     genres = db.relationship('Genre', 
                              secondary='movies_genres',
@@ -47,10 +49,11 @@ class Movie(db.Model):
         '''Provides helpful representation when printed'''
         return (f'< movie_id = {self.movie_id}, '
                 f'imdb_id = {self.imdb_id}, '
-                f'imdb_url = {self.imdb_url}, '
+                f'movie_url = {self.movie_url}, '
                 f'imdb_rating = {self.imdb_rating}, '
                 f'title = {self.title}, '
-                f'usa_release_date = {self.usa_release_date}>')
+                f'usa_release_date = {self.usa_release_date},'
+                f'poster_img = {self.poster_img}>')
 
 class Review(db.Model):
     '''Users' reviews and ratings'''

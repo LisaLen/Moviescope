@@ -3,11 +3,21 @@
 {% block content %}
 <p>
     <form action='/add-movie-to-journal'>
-    Movie title: <input type='text' id='movietitle' name='title'>  <button type='click' id='imdbsearch'>Search IMDB</button><br>
-    Rating: <input type='text' name='rating'><br>
-    <p>Review:</p>
+    <span>Movie title: <input type='text' id='movietitle' name='title' required>  <button type='click' id='imdbsearch'>Search IMDB</button></span><br>
+    IMDb_ID: <input type='text' id='imdbid' name='imdbid' required>
+    IMDB rating: <input type='text' id='imdb_rating' name='imdb_rating' required>
+    Release date: <input type='text' id='released' name='released' required>
+    Genre: <input type='text' id='genre' name='genre' required><br>
     <div>
-        <textarea name='review'></textarea>
+        Plot: <br><textarea id='plot' name='plot'></textarea><br>
+     </div>   
+     <input type='hidden' id='movie_url' name='movie_url'>
+     <input type='hidden' id='poster_img' name='poster_img'>
+    <div>
+        Enter Your Rating: <input type='text' name='rating' required><br>
+    <p>Write Your Review:</p>
+    
+        <textarea name='review' required></textarea>
     </div><br>
    <!--  Date: <input type='text' name='review_date'><br> -->
     <input type='submit' value='Add Movie to Journal'><br><br>
