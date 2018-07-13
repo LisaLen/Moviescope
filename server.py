@@ -110,7 +110,7 @@ def add_new_movie():
     movie_title = request.args.get('title')
     imdb_id = request.args.get('imdbid')
     imdb_rating = request.args.get('imdb_rating')
-    usa_release_date = request.args.get('released')
+    release_date = request.args.get('released')
     genre = request.args.get('genre')
     plot = request.args.get('plot')
     movie_url = request.args.get('movie_url')
@@ -129,7 +129,7 @@ def add_new_movie():
 
 
 
-    print (movie_title, imdb_id, imdb_rating, usa_release_date, 
+    print (movie_title, imdb_id, imdb_rating, release_date, 
     genre, movie_url, plot, poster_img, rating, review, review_date)
     print('\n')
     print('\n')
@@ -142,8 +142,30 @@ def add_new_movie():
     flash ('movie was added')
 
 
-    # new_movie = Movie(title=movie_title) 
+    new_movie = Movie(imdb_id=imdb_id, 
+                      movie_url=movie_url,
+                      imdb_rating=imdb_rating,
+                      title=movie_title,
+                      plot=plot,
+                      usa_release_date=release_date,
+                      poster_img=poster_img)
+    
+    print('###############################')
+    print('\n')
+    print('\n')
 
+    print(new_movie)
+    
+    print('\n')
+
+    print('\n')
+    print('###############################')
+    
+    
+    
+  
+     
+    
     # db.session.add(new_movie) 
     # db.session.commit()
 
