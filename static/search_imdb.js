@@ -50,36 +50,44 @@ function showSearchResults(results){
      }
 }
 
+function popUpMovieInformation(results) {
+    console.log(results['Title']);
+    $('#movietitle').val(results['Title']);
+    console.log($('#movietitle').val())
+
+}
+
+
+
+        // let movie = {title: result['Title'],
+        //          released: result['Released'],
+        //          genre: result['Genre'],
+        //          poster_url: result['Poster'],
+        //          imdb_rating: result['imdbRating'],
+        //          imdb_id: result['imdbID'],
+        //          movie_url: result['Website']};
+
+       
+
 function searchMovieByImdbID(evt){
     // search movie by ImdbID
-    evt.preventDefault();
-    let title = $('#movietitle').val();
-    console.log(title);
-    let url = 'http://www.omdbapi.com/?t=' + title + '&apikey=' + API_KEY
+
+    let imdb_id_val = $('#imdb_id_radio').val();
+    console.log(imdb_id_val);
+   
+    let url = 'http://www.omdbapi.com/?i=' + imdb_id_val + '&apikey=' + API_KEY
     console.log(url);
 
-    $.get(url, showSearchResults)
-   
+    $.get(url, popUpMovieInformation)
+    
 }
 
 
-
-
-function popUpMovieTitle(evt){
-    // fetches movie title of checked movie and send movie title to add-new-movie form
-    alert('Hi!, I am radio button');
-       let imdb_id_val = $('#imdb_id_radio').val();
-
-        console.log(imdb_id_val);
-
-
-
-}
 
 
 $('#imdbsearch').on('click', searchMovieByTitle);
 
-$('table').on('click','#imdb_id_radio', popUpMovieTitle);
+$('table').on('click','#imdb_id_radio', searchMovieByImdbID);
 
   
     
@@ -91,30 +99,3 @@ $('table').on('click','#imdb_id_radio', popUpMovieTitle);
 
 
 
-// to fetch data for a particular movie
-// function showSearchResults(results){
-//     let movie = {title: results['Title'],
-//                  released: results['Released'],
-//                  genre: results['Genre'],
-//                  poster_url: results['Poster'],
-//                   imdb_rating: results['imdbRating'],
-//                  imdb_id: results['imdbID'],
-//                  movie_url: results['Website']};
-
-//     console.log(movie);
-// }
-
-// // to build API request for a particular movie based on IMDB ID
-// function searchMovie(evt){
-//     alert('You need to progrma IMBD feature');
-//     evt.preventDefault();
-//     let title = $('#movietitle').val();
-//     console.log(title);
-//     let url = 'http://www.omdbapi.com/?t=' + title + '&apikey=' + API_KEY
-//     console.log(url);
-
-//     $.get(url, showSearchResults)
-   
-// }
-
-// $('#imdbsearch').on('click', searchMovie);
