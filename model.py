@@ -96,8 +96,8 @@ class Genre(db.Model):
     def __repr__(self):
 
         return (f'<genre_id = {self.genre_id}, '
-                f'genre_title = {self.genre_title}, '
-                f'movie_id =  {self.movie_id}>')
+                f'genre_title = {self.genre_title}>')
+                
 
 
 class MovieGenre(db.Model):

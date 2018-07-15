@@ -104,6 +104,84 @@ def link_to_add_movie():
 
     return render_template('add_movie.html')
 
+
+def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date, poster_img):
+    '''Create new movie row in DB, returns Movie object'''
+
+    new_movie = Movie(imdb_id=imdb_id, 
+                      movie_url=movie_url,
+                      imdb_rating=imdb_rating,
+                      title=title,
+                      plot=plot,
+                      usa_release_date=release_date,
+                      poster_img=poster_img)
+
+    print('###############################')
+    print('\n')
+    print('\n')
+
+    print(new_movie)
+    print('\n')
+
+    print('\n')
+    print('###############################')
+
+    db.session.add(new_movie) 
+    db.session.commit()
+
+    return new_movie
+
+def create_new_review(movie_id, user_id, review, rating, date_review):
+    '''Creates new review row in DB, returns Review object'''
+    
+    new_review = Review(movie_id=movie_id,
+                        user_id=user_id,
+                        review=review,
+                        rating=rating,
+                        date_review=date_review)
+
+    print('###############################')
+    print('\n')
+    print('\n')
+
+    print(new_review)
+
+    print('\n')
+
+    print('\n')
+    print('###############################')
+
+    db.session.add(new_review)
+    db.session.commit()
+
+    return new_review
+
+def create_movie_genres_connection(movie_id, genres):
+    '''Takes list of genres and build connection with given movie_id'''
+
+    #checking, if we have genres of new_movie in DB and fetching genre_id
+    genres_tpl = db.session.execute('SELECT genre_title FROM genres').fetchall()
+  
+
+    for genre in genres:
+        if (genre, ) not in genres_tpl: 
+
+            #add new genre into Genres table
+            new_genre = Genre(genre_title=genre)
+            db.session.add(new_genre)
+            db.session.commit()
+
+        genre_id = Genre.query.filter_by(genre_title=genre).first().genre_id
+        #create new relation genre_id for new_movie in Genres_Movies table
+        new_movie_genre=MovieGenre(movie_id=movie_id, genre_id=genre_id)
+        db.session.add(new_movie_genre)
+
+    db.session.commit()
+    print('movie - genre connection is created')
+
+
+
+
 @app.route('/add-movie-to-journal')
 def add_new_movie():
     '''Add new movie, rating and review into journal'''
@@ -111,7 +189,7 @@ def add_new_movie():
     imdb_id = request.args.get('imdbid')
     imdb_rating = request.args.get('imdb_rating')
     release_date = request.args.get('released')
-    genre = request.args.get('genre')
+    genres = request.args.get('genre').split(', ') #string with several genres; converting string to list
     plot = request.args.get('plot')
     movie_url = request.args.get('movie_url')
     poster_img = request.args.get('poster_img')
@@ -119,18 +197,15 @@ def add_new_movie():
     review = request.args.get('review')
 
     #review day is always current day
-    review_date = datetime.date.today().strftime("%d-%b-%Y")
+    date_review = datetime.date.today().strftime("%d-%b-%Y")
 
     print('###############################')
     print('\n')
     print('\n')
 
     print('\n')
-
-
-
     print (movie_title, imdb_id, imdb_rating, release_date, 
-    genre, movie_url, plot, poster_img, rating, review, review_date)
+    genres, movie_url, plot, poster_img, rating, review, date_review)
     print('\n')
     print('\n')
 
@@ -139,48 +214,24 @@ def add_new_movie():
     print('\n')
     print('###############################')
     
+
+    new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
+                      movie_title, plot, release_date, poster_img)
+
+    new_review = create_new_review(new_movie.movie_id, session.get('current_user'), review, rating, date_review)
+
+    create_movie_genres_connection(new_movie.movie_id, genres)
+     
+
+    
+    print('current user id', session.get('current_user'))
+
+   
+ 
+
     flash ('movie was added')
 
-
-    new_movie = Movie(imdb_id=imdb_id, 
-                      movie_url=movie_url,
-                      imdb_rating=imdb_rating,
-                      title=movie_title,
-                      plot=plot,
-                      usa_release_date=release_date,
-                      poster_img=poster_img)
-    
-    print('###############################')
-    print('\n')
-    print('\n')
-
-    print(new_movie)
-    
-    print('\n')
-
-    print('\n')
-    print('###############################')
-    
-    
-    
-  
-     
-    
-    # db.session.add(new_movie) 
-    # db.session.commit()
-
-    
-    print('current user id', session['current_user'])
-
-    # new_review = Review(movie_id=new_movie.movie_id, 
-    #                     user_id=session['current_user'],
-    #                     review=review,
-    #                     rating=rating)
-
-    # db.session.add(new_review)
-    # db.session.commit()
-
-    return redirect('homepage')
+    return redirect('/homepage')
 
 
 
