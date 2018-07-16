@@ -15,42 +15,48 @@ app.secret_key = 'ABC'
 def open_singin_singup_page():
     '''Show SignIn/SignUp page'''
 
-    return render_template('signin_signup.html')
+    if not session.get('current_user'): 
+        return render_template('signin_signup.html')
+    else:
+        return redirect('/homepage')
 
+   
 
-@app.route('/sign-in', methods=["POST"])
+@app.route('/sign-in', methods=['GET', 'POST'])
 def sin_in():
     '''Action for login form; log a user in'''
-
-    login = request.form['login']
-    password = request.form['password']
-    print (password)
-
-    #query to get user object using login
-    user = User.query.filter_by(login=login).first()
-    print(user)
-
-    if user:
-        if password == user.password:
-            #fetchs user_id for loged-in user
-            user_id = User.query.filter_by(login=login).one().user_id
-            session['current_user'] = user_id
-            fname = user.fname
-            lname = user.lname
-            flash (f'Logged in as {fname} {lname}' )
-            return redirect('/homepage')
+    if request.method == 'POST':
+        
+        login = request.form['login']
+        password = request.form['password']
+        
+        #query to get user object using login
+        user = User.query.filter_by(login=login).first()
+        print(user)
+        
+        if user:
+            if password == user.password:
+                #fetchs user_id for loged-in user
+                user_id = User.query.filter_by(login=login).one().user_id
+                session['current_user'] = user_id
+                fname = user.fname
+                lname = user.lname
+                flash (f'Logged in as {fname} {lname}' )
+                return redirect('/homepage')
+            else: 
+                flash('Wrong password')
+                return redirect('/')
         else: 
-            flash('Wrong password')
+            flash ('Username doesn\'t exist')
             return redirect('/')
-    else: 
-        flash ('Username doesn\'t exist')
-        return redirect('/')
+    else:
+        return redirect('/homepage')
 
 @app.route('/logout')
 def logout():
     '''User log-out'''
     session.clear()
-
+    user = User.query.filter_by(login=login).one()
     return redirect('/')
 
 @app.route('/sign-up', methods=['POST'])
@@ -91,7 +97,7 @@ def open_homepage():
     if 'current_user' in session: 
                        
         #returns [(<Movie>, rating)]
-        movies_ratings = db.session.query(Movie, Review.rating).join(Review).filter_by(user_id=session['current_user'])    
+        movies_ratings = db.session.query(Movie, Review.rating).join(Review).filter_by(user_id=session['current_user']).all()  
 
         return render_template('homepage.html', movies_ratings=movies_ratings)
     
@@ -116,15 +122,15 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
                       usa_release_date=release_date,
                       poster_img=poster_img)
 
-    print('###############################')
-    print('\n')
-    print('\n')
+    # print('###############################')
+    # print('\n')
+    # print('\n')
 
-    print(new_movie)
-    print('\n')
+    # print(new_movie)
+    # print('\n')
 
-    print('\n')
-    print('###############################')
+    # print('\n')
+    # print('###############################')
 
     db.session.add(new_movie) 
     db.session.commit()
@@ -140,16 +146,16 @@ def create_new_review(movie_id, user_id, review, rating, date_review):
                         rating=rating,
                         date_review=date_review)
 
-    print('###############################')
-    print('\n')
-    print('\n')
+    # print('###############################')
+    # print('\n')
+    # print('\n')
 
-    print(new_review)
+    # print(new_review)
 
-    print('\n')
+    # print('\n')
 
-    print('\n')
-    print('###############################')
+    # print('\n')
+    # print('###############################')
 
     db.session.add(new_review)
     db.session.commit()
@@ -180,59 +186,101 @@ def create_movie_genres_connection(movie_id, genres):
     print('movie - genre connection is created')
 
 
+@app.route('/check-imdbid-indb')
+def chek_if_movie_in_journal():
+    '''Checks if selected movie in current_user's journal. 
+    Returns True if movie is in current_user's journal '''
 
+    imdb_id = request.args.get('imdb_id')
+    print('###############################')
+    print('\n')
+    print('\n')
+    print('\n')
+    print('imdb_id', imdb_id)
+    print('\n')
+    print('\n')
+    print('\n')
+    print('query', db.session.query(Movie).join(Review).filter(User.user_id==session.get('current_user'), Movie.imdb_id==imdb_id).first())
+    print('###############################')
+
+
+    if db.session.query(Movie).join(Review).filter(User.user_id==session.get('current_user'), Movie.imdb_id==imdb_id).first():
+        return 'True' 
+    return 'False'   
 
 @app.route('/add-movie-to-journal')
 def add_new_movie():
     '''Add new movie, rating and review into journal'''
-    movie_title = request.args.get('title')
+
+    #get all imdb_ids from DB, it returns [(imdb_id, ).....]
     imdb_id = request.args.get('imdbid')
-    imdb_rating = request.args.get('imdb_rating')
-    release_date = request.args.get('released')
+    movie_title = request.args.get('title')
+    
+    if not Movie.query.filter_by(imdb_id=imdb_id).first():
+        #if given imdb_id doesn't exist in DB, then create new_movie in DB
+        imdb_rating = request.args.get('imdb_rating')
+        release_date = request.args.get('released')
+        
+        plot = request.args.get('plot')
+        movie_url = request.args.get('movie_url')
+        poster_img = request.args.get('poster_img')
+        # print('###############################')
+        # print('\n')
+        # print('\n')
+
+        # print('\n')
+        # print (movie_title, imdb_id, imdb_rating, release_date, 
+        # movie_url, plot, poster_img)
+        # print('\n')
+        # print('\n')
+
+        # print('\n')
+
+        # print('\n')
+        # print('###############################')
+        
+        new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
+                          movie_title, plot, release_date, poster_img)
+
+    else:
+        new_movie=Movie.query.filter_by(imdb_id=imdb_id).one()
+        
+
     genres = request.args.get('genre').split(', ') #string with several genres; converting string to list
-    plot = request.args.get('plot')
-    movie_url = request.args.get('movie_url')
-    poster_img = request.args.get('poster_img')
     rating = int(request.args.get('rating'))
     review = request.args.get('review')
 
     #review day is always current day
     date_review = datetime.date.today().strftime("%d-%b-%Y")
 
-    print('###############################')
-    print('\n')
-    print('\n')
-
-    print('\n')
-    print (movie_title, imdb_id, imdb_rating, release_date, 
-    genres, movie_url, plot, poster_img, rating, review, date_review)
-    print('\n')
-    print('\n')
-
-    print('\n')
-
-    print('\n')
-    print('###############################')
-    
-
-    new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
-                      movie_title, plot, release_date, poster_img)
-
     new_review = create_new_review(new_movie.movie_id, session.get('current_user'), review, rating, date_review)
 
     create_movie_genres_connection(new_movie.movie_id, genres)
      
+    # print('###############################')
+    # print('\n')
+    # print('\n')
 
-    
-    print('current user id', session.get('current_user'))
+    # print('\n')
+    # print (rating, review, date_review)
+    # print('\n')
+    # print('\n')
 
-   
- 
+    # print('\n')
+    # print ('new movie', new_movie)
+    # print('new review', new_review)
+    # print('\n')
+    # print('\n')
+    # print('current user id', session.get('current_user'))
+
+    # print('\n')
+
+    # print('\n')
+    # print('###############################')
 
     flash ('movie was added')
 
     return redirect('/homepage')
-
 
 
 

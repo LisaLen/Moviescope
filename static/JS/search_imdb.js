@@ -26,7 +26,7 @@ function showSearchResults(results){
              title = search_result['Title'];
              console.log(title);
              if(search_result['Poster'] === 'N/A'){
-                  poster = 'static/no_poster.jpg'
+                  poster = 'static/IMG/no_poster.jpg'
             }else{
               poster = search_result['Poster'];
             }
@@ -37,7 +37,7 @@ function showSearchResults(results){
             year = search_result['Year'];
            console.log(year);
 
-            tb_row = `<tr><td><input type='radio' name='imdb_id_radio' id='imdb_id_radio' value=${imdb_id}></td>
+            tb_row = `<tr><td><input type='radio' name='imdb_id_radio' id='imdb_id_radio' value=${imdb_id}  checked="checked"></td>
                         <td><img src=${poster} width='50' hight='50'></td>
                         <td>${title}</td>
                         <td>${year}</td>
@@ -52,10 +52,16 @@ function showSearchResults(results){
 
 function popUpMovieInformation(results) {
     //sends selected movie informain to add-new-moview form
+    
+    // to check if imdb_id is in journal or not
+    
+
+
+    $('#imdbid').val([results['imdbID']]);
     console.log(results['Title']);
     $('#movietitle').val(results['Title']);
     console.log($('#movietitle').val());
-    $('#imdbid').val([results['imdbID']]);
+
     $('#imdb_rating').val(results['imdbRating']);
     $('#released').val(results['Released']);
     $('#genre').val(results['Genre']);
@@ -69,12 +75,13 @@ function popUpMovieInformation(results) {
 }
 
 
-function searchMovieByImdbID(evt){
+function searchMovieByImdbID(imdb_id_val){
     // search movie by ImdbID
 
-    let imdb_id_val = $('#imdb_id_radio').val();
+     
     console.log(imdb_id_val);
-   
+
+    // let imdb_id_val = $('#imdb_id_radio').val();
     let url = 'http://www.omdbapi.com/?i=' + imdb_id_val + '&apikey=' + API_KEY
     console.log(url);
 
@@ -82,11 +89,34 @@ function searchMovieByImdbID(evt){
     
 }
 
+function checkMovieInJournal(evt){
+    //checks, if selected movie exists in user's journal
 
+  
+
+    let tr = $(this).closest('tr');
+    console.log(tr)
+    let imdb_id_val  = tr.context.value
+
+    console.log(imdb_id_val);
+
+
+    $.get('/check-imdbid-indb', {imdb_id: imdb_id_val}, function(results){
+        if(results==='True'){
+            console.log(results);
+            alert('This movie is already in your journal. To edit review, use \'Edit\' on Journal page');
+        }else{
+            searchMovieByImdbID (imdb_id_val);
+        }
+    } )
+}
 
 $('#imdbsearch').on('click', searchMovieByTitle);
 
-$('table').on('click','#imdb_id_radio', searchMovieByImdbID);
+
+$('table').on('click', '#imdb_id_radio', checkMovieInJournal);
+
+
 
   
     

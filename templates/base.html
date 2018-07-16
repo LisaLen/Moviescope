@@ -24,6 +24,14 @@
 
 {% endif %}
 
+<button type="button" onclick="goBack()">{% block backbutton%} Go Back {% endblock %}</button>
+
+<script>
+function goBack() {
+    window.history.back();
+}
+</script>
+
     {% block content%} body content {% endblock %}
 
 </body>
