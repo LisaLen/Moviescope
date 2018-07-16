@@ -4,14 +4,38 @@
 <p><a href='/add-movie'>Add Movie to Journal</a></p>
 <p><h2>My Watched Movies List</h2></p>
 <table>
+    <th>Poster</th>
     <th>Movie Title</th>
-    <!-- <th>Genre</th> -->
+    <th>Release Date</th>
+    <th>Plot</th>
+    <th>Genre</th>
+    <th>IMDb Rating</th>
     <th>My Rating</th>
-    <!-- th>Review Date</th> -->
-    {% for movie in movies_ratings %}
+    <th>My Review</th>
+    <th>Review Date</th>
+
+    {% for movie_review in movies_reviews %}
     <tr>
-        <td><a href='/movie-info?title = {{ movie[0].title }}'>{{ movie[0].title}} </td>
-        <td>{{ movie[1] }}</td>
+        {% with %}
+        <!--  -->
+        {% set movie = movie_review[0] %} 
+        {% set review = movie_review[1] %}
+        <td><img src='{{ movie.poster_img }}' width='50' hight='50'></td>
+        <td><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
+        <td>{{ movie.usa_release_date }}</td>
+        <td>{{ movie.plot }}</td>
+        
+        <td>
+        {% for genre in movie.genres %}
+        {{ genre.genre_title }},
+        {% endfor %}</td>
+
+        <td>{{movie.imdb_rating }}</td>
+        <td>{{review.rating }}</td>
+        <td>{{review.review }}</td>
+        <td>{{review.date_review }}</td>
+
+        {% endwith %}
     </tr>
        
     {% endfor %}

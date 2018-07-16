@@ -96,10 +96,19 @@ def open_homepage():
     ''' Show homepage; show mivie list for a particular user'''
     if 'current_user' in session: 
                        
-        #returns [(<Movie>, rating)]
-        movies_ratings = db.session.query(Movie, Review.rating).join(Review).filter_by(user_id=session['current_user']).all()  
+        #returns [(<Movie>, <Review>)]
+        movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()  
+        print('###############################')
+        print('\n')
+        print('\n')
 
-        return render_template('homepage.html', movies_ratings=movies_ratings)
+        print(movies_reviews)
+        print('\n')
+
+        print('\n')
+        print('###############################')
+
+        return render_template('homepage.html', movies_reviews=movies_reviews)
     
     else: 
         return render_template('signin_signup.html')
