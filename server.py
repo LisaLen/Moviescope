@@ -291,6 +291,21 @@ def add_new_movie():
 
     return redirect('/homepage')
 
+@app.route('/delete-from-joural')
+def delete_movie_from_journal():
+    '''delete movie_id-user_id relationship and user's review for given movie_id in reviews table. It doesn't delete movie from DB'''
+
+    movie_id = request.args.get('movie_id')
+
+    #fetching review for given movie_id and current user
+    Review.query.filter_by(movie_id=movie_id, user_id=session.get('current_user')).delete()
+
+    db.session.commit()
+
+
+    return 'confirmed'
+
+
 
 
 if __name__ == '__main__':

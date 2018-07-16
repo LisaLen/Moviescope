@@ -34,6 +34,10 @@
         <td>{{review.rating }}</td>
         <td>{{review.review }}</td>
         <td>{{review.date_review }}</td>
+        <td><button  onclick="editReview()">Edit Review </button>
+        <td><button  id='deleteMovie' value='{{ movie.movie_id }}'>Delete </button>
+
+
 
         {% endwith %}
     </tr>
@@ -41,6 +45,9 @@
     {% endfor %}
     
 </table>
+<script src='http://code.jquery.com/jquery.js'></script>
+<!-- <script src ='static/JS/edit_movie.js'></script> -->
+<script src ='static/JS/delete_from_journal.js'></script>
 
 
 

@@ -37,12 +37,12 @@ function showSearchResults(results){
             year = search_result['Year'];
            console.log(year);
 
-            tb_row = `<tr><td><input type='radio' name='imdb_id_radio' id='imdb_id_radio' value=${imdb_id}  checked="checked"></td>
+            tb_row = `<tr><td><input type='radio' name='imdb_id_radio' id='imdb_id_radio' value=${imdb_id} ></td>
                         <td><img src=${poster} width='50' hight='50'></td>
                         <td>${title}</td>
                         <td>${year}</td>
                     </tr>`;
-         $('table').append(tb_row);
+         $('#movie_search').append(tb_row);
 
     }
     }else{
@@ -93,7 +93,7 @@ function checkMovieInJournal(evt){
     //checks, if selected movie exists in user's journal
 
   
-
+    console.log('hi')
     let tr = $(this).closest('tr');
     console.log(tr)
     let imdb_id_val  = tr.context.value
@@ -113,8 +113,7 @@ function checkMovieInJournal(evt){
 
 $('#imdbsearch').on('click', searchMovieByTitle);
 
-
-$('table').on('click', '#imdb_id_radio', checkMovieInJournal);
+$(document).on('click', '#imdb_id_radio', checkMovieInJournal);
 
 
 
