@@ -53,8 +53,7 @@ function showSearchResults(results){
 function popUpMovieInformation(results) {
     //sends selected movie informain to add-new-moview form
     
-    // to check if imdb_id is in journal or not
-    
+    // to check if imdb_id is in journal or not  
 
 
     $('#imdbid').val([results['imdbID']]);

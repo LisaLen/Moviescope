@@ -31,13 +31,46 @@
         {% endfor %}</td>
 
         <td>{{movie.imdb_rating }}</td>
-        <td>{{review.rating }}</td>
-        <td>{{review.review }}</td>
-        <td>{{review.date_review }}</td>
-        <td><button  onclick="editReview()">Edit Review </button>
+        <td  class='rating'>{{review.rating }}</td>
+        <td  class='review'>{{review.review }}</td>
+        <td class='date_review'>{{review.date_review }}</td>
+
+        <!-- Trigger/Open The Modal -->
+        <td><button  type='button' class='btn' data-toggle='modal' data-target='#modal-edit{{movie.movie_id}}' value='{{ movie.movie_id }}' >Edit Review </button>
+        
+        <!-- EDIT REVIEW POPUP WINDOW-->
+
+        <!-- The Modal -->
+        <div class="modal" id="modal-edit{{movie.movie_id}}" role='dialog'>
+
+        <!-- Modal content -->
+        <div class="modal-dialog">
+            <div class='modal-content'>
+                
+                <div class='modal-header'>
+            <button type='button' class='close' data-dismiss='modal'>X</button>
+                    <h4 class='modal-title'> Edit your review for {{movie.title}}</h4>
+                    </div>
+                <div class='modal-body'>
+                <p>
+                    <form>
+                    <input type='hidden' name='movie_id' value='{{movie.movie_id}}'>
+                    
+                    Edit rating: <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1"><br >
+                    Edit review: 
+                    <textarea id='new_review' name='review' value=>{{ review.review }}</textarea><br>
+                    <button type='button' id='confirm-edit' data-dismiss='modal'>Confirm</button>
+                    <button type='button'  data-dismiss='modal'>Cancel</button>
+                    </form>
+                        </p>
+                </div> <!-- end .model-body-->
+            </div> <!-- end .model-content -->
+        </div> <!--end .model-dialog  -->
+        </div> <!--end .model -->
+
+        <!-- END POPUP MODEL -->
+          
         <td><button  id='deleteMovie' value='{{ movie.movie_id }}'>Delete </button>
-
-
 
         {% endwith %}
     </tr>
@@ -46,8 +79,9 @@
     
 </table>
 <script src='http://code.jquery.com/jquery.js'></script>
-<!-- <script src ='static/JS/edit_movie.js'></script> -->
-<script src ='static/JS/delete_from_journal.js'></script>
+<script src ='/static/JS/edit_review.js'></script>
+
+<script src ='/static/JS/delete_from_journal.js'></script>
 
 
 

@@ -1,6 +1,6 @@
 from jinja2 import StrictUndefined
 
-from flask import (Flask, request, render_template, redirect, flash, session)
+from flask import (Flask, request, render_template, redirect, flash, session,jsonify)
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -98,16 +98,7 @@ def open_homepage():
                        
         #returns [(<Movie>, <Review>)]
         movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()  
-        print('###############################')
-        print('\n')
-        print('\n')
-
-        print(movies_reviews)
-        print('\n')
-
-        print('\n')
-        print('###############################')
-
+     
         return render_template('homepage.html', movies_reviews=movies_reviews)
     
     else: 
@@ -131,15 +122,7 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
                       usa_release_date=release_date,
                       poster_img=poster_img)
 
-    # print('###############################')
-    # print('\n')
-    # print('\n')
 
-    # print(new_movie)
-    # print('\n')
-
-    # print('\n')
-    # print('###############################')
 
     db.session.add(new_movie) 
     db.session.commit()
@@ -155,17 +138,7 @@ def create_new_review(movie_id, user_id, review, rating, date_review):
                         rating=rating,
                         date_review=date_review)
 
-    # print('###############################')
-    # print('\n')
-    # print('\n')
-
-    # print(new_review)
-
-    # print('\n')
-
-    # print('\n')
-    # print('###############################')
-
+    
     db.session.add(new_review)
     db.session.commit()
 
@@ -201,19 +174,9 @@ def chek_if_movie_in_journal():
     Returns True if movie is in current_user's journal '''
 
     imdb_id = request.args.get('imdb_id')
-    print('###############################')
-    print('\n')
-    print('\n')
-    print('\n')
-    print('imdb_id', imdb_id)
-    print('\n')
-    print('\n')
-    print('\n')
-    print('query', db.session.query(Movie).join(Review).filter(User.user_id==session.get('current_user'), Movie.imdb_id==imdb_id).first())
-    print('###############################')
 
 
-    if db.session.query(Movie).join(Review).filter(User.user_id==session.get('current_user'), Movie.imdb_id==imdb_id).first():
+    if db.session.query(Movie).join(Review).filter(Review.user_id==session.get('current_user'), Movie.imdb_id==imdb_id).first():
         return 'True' 
     return 'False'   
 
@@ -233,21 +196,7 @@ def add_new_movie():
         plot = request.args.get('plot')
         movie_url = request.args.get('movie_url')
         poster_img = request.args.get('poster_img')
-        # print('###############################')
-        # print('\n')
-        # print('\n')
-
-        # print('\n')
-        # print (movie_title, imdb_id, imdb_rating, release_date, 
-        # movie_url, plot, poster_img)
-        # print('\n')
-        # print('\n')
-
-        # print('\n')
-
-        # print('\n')
-        # print('###############################')
-        
+            
         new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
                           movie_title, plot, release_date, poster_img)
 
@@ -260,50 +209,54 @@ def add_new_movie():
     review = request.args.get('review')
 
     #review day is always current day
-    date_review = datetime.date.today().strftime("%d-%b-%Y")
+    date_review = datetime.date.today().strftime("%Y-%m-%d")
 
     new_review = create_new_review(new_movie.movie_id, session.get('current_user'), review, rating, date_review)
 
     create_movie_genres_connection(new_movie.movie_id, genres)
      
-    # print('###############################')
-    # print('\n')
-    # print('\n')
-
-    # print('\n')
-    # print (rating, review, date_review)
-    # print('\n')
-    # print('\n')
-
-    # print('\n')
-    # print ('new movie', new_movie)
-    # print('new review', new_review)
-    # print('\n')
-    # print('\n')
-    # print('current user id', session.get('current_user'))
-
-    # print('\n')
-
-    # print('\n')
-    # print('###############################')
-
     flash ('movie was added')
 
     return redirect('/homepage')
 
-@app.route('/delete-from-joural')
+@app.route('/delete-from-joural.json')
 def delete_movie_from_journal():
-    '''delete movie_id-user_id relationship and user's review for given movie_id in reviews table. It doesn't delete movie from DB'''
+    '''deletes movie_id-user_id relationship and user's review for given movie_id in reviews table. It doesn't delete movie from DB'''
 
     movie_id = request.args.get('movie_id')
 
     #fetching review for given movie_id and current user
-    Review.query.filter_by(movie_id=movie_id, user_id=session.get('current_user')).delete()
+    try:
+        Review.query.filter_by(movie_id=movie_id, user_id=session.get('current_user')).delete()
+        db.session.commit()
+        return 'confirmed'
+    except: 
+        return 'ERROR' 
 
-    db.session.commit()
+@app.route('/edit-review.json')
+def edit_rating_and_review():
+    '''edits rating and review of selected movie'''
 
+    movie_id = request.args.get('movie_id')
+    new_rating = request.args.get('new_rating')
+    new_review =  request.args.get('new_review')
+    date_review = datetime.date.today().strftime("%Y-%m-%d")
+    
+     #fetching review for given movie_id and current user
+    review = Review.query.filter_by(movie_id=movie_id, user_id=session.get('current_user')).one()
 
-    return 'confirmed'
+    review.rating = new_rating
+    review.review = new_review
+    review.date_review = date_review
+   
+
+    try:
+        db.session.commit()
+        return jsonify({'date_review': date_review})
+
+    except:
+        return 'ERROR'     
+
 
 
 
