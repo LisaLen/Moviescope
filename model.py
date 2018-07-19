@@ -12,20 +12,18 @@ class User(db.Model):
     __tablename__ = 'users'
 
     user_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    login = db.Column(db.String(68), nullable=False, unique=True)
+    email = db.Column(db.String(64), nullable=False, unique=True)
     password = db.Column(db.String(24), nullable=False)
     fname = db.Column(db.String(32), nullable=True)
     lname = db.Column(db.String(40), nullable=True)
-    email = db.Column(db.String(64), nullable=False)
-
+    
     def __repr__(self):
         '''Provides helpful representation when printed'''
         return (f'<user_id = {self.user_id}, '
-                f'login = {self.login}, '
+                f'email = {self.email}, '
                 f'password = {self.password}, '
                 f'fname = {self.fname}, '
-                f'lname = {self.lname}, '
-                f'email = {self.email}>')
+                f'lname = {self.lname}>')
 
 class Movie(db.Model):
     '''Movies saved in Movie-Journal app'''

@@ -37,10 +37,11 @@
      
      
     </div>
-    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+    <div class="navbar-collapse collapse w-100 order-3 order-md-0 dual-collapse2">
+        {% block navbar3 %} {% endblock %}     
         <ul class="navbar-nav ml-auto navbar-right">
             <li class="nav-item">
-                 {% if session %}
+                 {% if session['current_user'] %}
                 <p><a class="nav-link" href="/logout" ><span class="glyphicon glyphicon-log-out"></span> Log Out</a></p>
                 {% endif %}
              </li>

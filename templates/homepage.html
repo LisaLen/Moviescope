@@ -38,8 +38,8 @@
         <!--  -->
         {% set movie = movie_review[0] %} 
         {% set review = movie_review[1] %}
-        <td><img src='{{ movie.poster_img }}' width='50' hight='50'></td>
-        <td><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
+        <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
+        <td width='120'><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
         <td>{{ movie.usa_release_date }}</td>
         <td>{{ movie.plot }}</td>
         
@@ -50,7 +50,7 @@
 
         <td>{{movie.imdb_rating }}</td>
         <td  class='rating'>{{review.rating }}</td>
-        <td  class='review'>{{review.review }}</td>
+        <td  class='review' width='400'>{{review.review }}</td>
         <td class='date_review'>{{review.date_review }}</td>
 
         <!-- Trigger/Open The Modal -->

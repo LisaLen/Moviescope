@@ -1,19 +1,66 @@
 {% extends 'base.html' %}
 {% block title %} Sign-In {% endblock %}
+
+{% block navbar3 %}
+<form action='/sign-in' method='POST'>
+  <div class="form-row align-items-center"> -->
+    <div class="col-auto">
+      <!-- <label class="sr-only" for="inlineFormInput">Name</label> -->
+      <input type="text"  class="form-control" id="inlineFormInput" name ='email'  placeholder="email" style='width:130px' required>
+    </div>
+   <div class="col-auto">
+      <!-- <label class="sr-only" for="inlineFormInputGroup">Username</label> -->
+      <!-- <div class="input-group mb-2">         -->
+        <input type="password" class="form-control" id="inlineFormInputGroup" placeholder="password" name ='password' required style='width:100px'>
+      </div>
+    <!-- </div> -->
+    
+ <div class="col-auto">
+      <button type="submit" class="btn" style='background-color:#68abee'>Sign-In</button>
+ </div>
+  </div>
+</form>
+
+
+
+
+
+<!--  <form action='/sign-in' method='POST' class="form-inline my-2 my-lg-0">
+      <input  class="form-control mr-sm-2" type='text' name ='login' required aria-label="login"><br>
+ <input class="form-control mr-sm-2" type= 'password' name = 'password' required aria-label="password" required><br>
+    <button class="btn btn-outline-success my-2 my-sm-0"  type="submit">Sign-In</button>
+    
+</form> -->
+
+{% endblock %}
 {% block content %}
 
-<h1>Sign-In</h1>
-<form action='/sign-in' method='POST'>
-    Log-in: <input type='text' name ='login' required><br>
-    Password: <input type= 'password' name = 'password' required><br>
-    <input type='submit' value='Sign-In'>
+
+<div class='container'>
+    <h1>Registration</h1>
+<form action='/sign-up' method='POST'>
+  <div class="form-group">
+     <label for="inputEmail4">Email</label>
+      <input type="email" class="form-control" placeholder="Email" name='email' style='width:300px' required>
+      </div>
+  
+ 
+    <div class="form-group">
+      <label for="inputPassword4">Password</label>
+      <input type="password" class="form-control" placeholder="Password" name='password' style='width:300px' required>
+    </div>
+  
+  <div class="form-group">
+    <label for="inputFName">First Name</label>
+    <input type="text" class="form-control"  placeholder="First Name" name='fname' style='width:300px' required>
+  </div>
+  <div class="form-group">
+    <label for="inputLName">Last Name</label>
+    <input type="text" class="form-control" placeholder="Last Name" name='lname' style='width:300px' required>
+  </div>
+    <button type="submit" class="btn btn-primary">Sign Up</button>
 </form>
 
-<h1> Sign-up</h1>
-<form action='/sign-up' method = 'POST'>
-    email: <input type='text' name='email'>
-    <input type='submit' value='Sign-Up'>
-</form>
-
+</div> 
 
 {% endblock %}

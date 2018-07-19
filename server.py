@@ -27,17 +27,25 @@ def sin_in():
     '''Action for login form; log a user in'''
     if request.method == 'POST':
         
-        login = request.form['login']
+        email = request.form['email']
         password = request.form['password']
         
-        #query to get user object using login
-        user = User.query.filter_by(login=login).first()
+        #query to get user object using email
+        user = User.query.filter_by(email=email).first()
+        print('######################')
+        print('\n')
+        print('\n')
+        print('\n')
+        print('\n')
         print(user)
+        print('\n')
+        print('\n')
+        print('######################')
         
         if user:
             if password == user.password:
                 #fetchs user_id for loged-in user
-                user_id = User.query.filter_by(login=login).one().user_id
+                user_id = User.query.filter_by(email=email).one().user_id
                 session['current_user'] = user_id
                 fname = user.fname
                 lname = user.lname
@@ -56,41 +64,44 @@ def sin_in():
 def logout():
     '''User log-out'''
     session.clear()
-    user = User.query.filter_by(login=login).one()
+    # user = User.query.filter_by(login=login).one()
     return redirect('/')
 
-@app.route('/sign-up', methods=['POST'])
-def sign_up():
-    '''Check is email exists in DB'''
+# @app.route('/sign-up', methods=['POST'])
+# def sign_up():
+#     '''Check is email exists in DB'''
 
-    email = request.form['email']
-    user = User.query.filter_by(email=email).first()
+#     email = request.form['email']
+#     user = User.query.filter_by(email=email).first()
  
-    if user is None:
-        return render_template('new_user_registration.html', email=email)
-    else:
-        flash (f'Username with email: {email} already exists in databese')
-        return redirect('/')
+#     if user is None:
+#         return render_template('new_user_registration.html', email=email)
+#     else:
+#         flash (f'Username with email: {email} already exists in databese')
+#         return redirect('/')
 
 
-@app.route('/new-user-registration', methods=['POST'])
+@app.route('/sign-up', methods=['POST'])
 def register_new_user():
 
    
-    login = request.form['login']
-    password = request.form['password']
-    fname = request.form['fname']
-    lname = request.form['lname']
-    email = request.args['email']
-
-    new_user = User(login=login, password=password, 
-                    fname=fname, lname=lname, email=email)
-    db.session.add(new_user)
-    db.session.commit()
+    email = request.form['email']
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        password = request.form['password']
+        fname = request.form['fname']
+        lname = request.form['lname']
+        new_user = User(email=email, password=password, 
+                    fname=fname, lname=lname, )
+        db.session.add(new_user)
+        db.session.commit()
     
-    flash('New user has been added. Please sign-in to continue')
-    return redirect('/')
-
+        flash('New user has been added. Please sign-in to continue')
+        return redirect('/')
+    else:
+        flash (f'Username with email: {email} already exists in databese')
+        return redirect('/')
+        
 @app.route('/homepage')
 def open_homepage():
     ''' Show homepage; show mivie list for a particular user'''
