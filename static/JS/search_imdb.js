@@ -5,7 +5,7 @@ const API_KEY = '3cea6db4';
 function searchMovieByTitle(evt){
     // constract API request to search movies by title
     evt.preventDefault();
-    let title = $('#movietitle').val();
+    let title = $('#movietitleIMDb').val();
     console.log(title);
     let url = 'http://www.omdbapi.com/?s=' + title + '&type=movie&apikey=' + API_KEY
     console.log(url);

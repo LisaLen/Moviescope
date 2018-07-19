@@ -19,6 +19,37 @@
  
 
 
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+        <ul class="navbar-nav mr-auto ">
+            <li class="nav-item active">
+                <a class="nav-link" class="nav-link" href="#" onclick="goBack()">Back</a>
+           </li>
+
+           {% block navbar1 %} {% endblock %}           
+        </ul>
+    </div>
+    <div class="navbar-collapse collapse w-100 order-2 order-md-0 dual-collapse2">
+        {% block navbar2 %} {% endblock %}     
+     
+     
+    </div>
+    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+        <ul class="navbar-nav ml-auto navbar-right">
+            <li class="nav-item">
+                 {% if session %}
+                <p><a class="nav-link" href="/logout" ><span class="glyphicon glyphicon-log-out"></span> Log Out</a></p>
+                {% endif %}
+             </li>
+          
+        </ul>
+    </div>
+   
+</nav>
+ 
 {% with messages = get_flashed_messages() %}
 {% if messages %}
 
@@ -31,14 +62,9 @@
 {% endwith %}
 
 
-{% if session %}
-<form action = "/logout">
-<input type='submit' value="Log Out">
-</form>
 
-{% endif %}
 
-<button type="button" onclick="goBack()">Go Back </button>
+
 
 <script>
 function goBack() {

@@ -1,18 +1,30 @@
 {% extends 'base.html' %}
 {% block title %} Movie Journal {% endblock %}
+{% block navbar1 %}
+<li class="nav-item">
+    <a class="nav-link" href='/add-movie'>Add Movie</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href='#'>Wish List</a>
+</li>
+
+{% endblock %}
 {% block content %}
-<p><a href='/add-movie'>Add Movie to Journal</a></p>
 <p><h2>My Watched Movies List</h2></p>
-<table>
-    <th>Poster</th>
-    <th>Movie Title</th>
-    <th>Release Date</th>
-    <th>Plot</th>
-    <th>Genre</th>
-    <th>IMDb Rating</th>
-    <th>My Rating</th>
-    <th>My Review</th>
-    <th>Review Date</th>
+
+<table class="table table-hover table-dark">
+    <thead class="thead-lihjt">
+    <th scope="col">Poster</th>
+    <th scope="col">Movie Title</th>
+    <th scope="col">Release Date</th>
+    <th scope="col">Plot</th>
+    <th scope="col">Genre</th>
+    <th scope="col">IMDb Rating</th>
+    <th scope="col">My Rating</th>
+    <th scope="col">My Review</th>
+    <th scope="col">Review Date</th>
+
+</thead>
 
     {% for movie_review in movies_reviews %}
     <tr>
@@ -78,10 +90,14 @@
     {% endfor %}
     
 </table>
+
+<!-- <link href='static/css/homepage.css' rel='stylesheet'> -->
+
 <script src='http://code.jquery.com/jquery.js'></script>
 <script src ='/static/JS/edit_review.js'></script>
 
 <script src ='/static/JS/delete_from_journal.js'></script>
+
 
 
 

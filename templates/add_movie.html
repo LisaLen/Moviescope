@@ -1,10 +1,17 @@
 {% extends 'base.html' %}
 {%block title %} Add Movie {% endblock %}
+{% block navbar2 %}
+ <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id='movietitleIMDb'>
+      <button class="btn btn-outline-success my-2 my-sm-0" class='movietitle' id='imdbsearch' type="submit">Search IMDb</button>
+    </form>
+
+{% endblock %}
 {% block content %}
 <div class="container">
 <p>
     <form action='/add-movie-to-journal'>
-    <span>Movie title: <input type='text' id='movietitle' name='title' required>  <button type='click' id='imdbsearch'>Search IMDB</button></span><br>
+    <span>Movie title: <input type='text' id='movietitle' name='title' required>  
     IMDb_ID: <input type='text' id='imdbid' name='imdbid' required>
     IMDB rating: <input type='text' id='imdb_rating' name='imdb_rating' required>
     Release date: <input type='text' id='released' name='released' required>

@@ -6,3 +6,7 @@ body {
     background-size: cover;
    /*background-color: #cccccc;*/
 }
+.navbar-nav > li{
+  padding-left:30px;
+  padding-right:30px;
+}
