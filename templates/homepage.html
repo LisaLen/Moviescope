@@ -12,22 +12,28 @@
 {% block content %}
 <p><h2>My Watched Movies List</h2></p>
 
-<table class="table table-hover table-dark">
-    <thead class="thead-lihjt">
-    <th scope="col">Poster</th>
-    <th scope="col">Movie Title</th>
-    <th scope="col">Release Date</th>
-    <th scope="col">Plot</th>
-    <th scope="col">Genre</th>
-    <th scope="col">IMDb Rating</th>
-    <th scope="col">My Rating</th>
-    <th scope="col">My Review</th>
-    <th scope="col">Review Date</th>
+<!-- <table class="table table-hover table-dark">
+    <thead class="thead-lihjt"> -->
+<div style="overflow-x:auto">
+<table id='tb_journal'>   
+    <thead id='th_journal'>     
+        <th >Poster</th>
+        <th >Movie Title</th>
+        <th >Release Date</th>
+        <th >Plot</th>
+        <th >Genre</th>
+        <th >IMDb Rating</th>
+        <th >My Rating</th>
+        <th >My Review</th>
+        <th >Review Date</th>
+        <th></th>
+        <th></th>
+    </thead>
 
-</thead>
+    <tbody id='tb_journal'>
 
     {% for movie_review in movies_reviews %}
-    <tr>
+    <tr id='tr_journal'>
         {% with %}
         <!--  -->
         {% set movie = movie_review[0] %} 
@@ -60,19 +66,21 @@
             <div class='modal-content'>
                 
                 <div class='modal-header'>
-            <button type='button' class='close' data-dismiss='modal'>X</button>
                     <h4 class='modal-title'> Edit your review for {{movie.title}}</h4>
+            <button type='button' class='close' data-dismiss='modal'>X</button>
+                    
                     </div>
                 <div class='modal-body'>
                 <p>
                     <form>
                     <input type='hidden' name='movie_id' value='{{movie.movie_id}}'>
                     
-                    Edit rating: <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1"><br >
-                    Edit review: 
-                    <textarea id='new_review' name='review' value=>{{ review.review }}</textarea><br>
-                    <button type='button' id='confirm-edit' data-dismiss='modal'>Confirm</button>
-                    <button type='button'  data-dismiss='modal'>Cancel</button>
+                    <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1"><br >
+                    
+                   <textarea id='new_review' name='review' value=>{{ review.review }}</textarea><br>
+                   <button class='btn-modal' type='button'  data-dismiss='modal' >Cancel</button>
+                    <button class='btn-modal' type='button' id='confirm-edit' data-dismiss='modal' >Confirm</button>
+                    
                     </form>
                         </p>
                 </div> <!-- end .model-body-->
@@ -82,16 +90,17 @@
 
         <!-- END POPUP MODEL -->
           
-        <td><button  id='deleteMovie' value='{{ movie.movie_id }}'>Delete </button>
+        <td><button  id='deleteMovie' class='btn' value='{{ movie.movie_id }}'>Delete </button>
 
         {% endwith %}
     </tr>
        
     {% endfor %}
-    
+    </tbody>    
 </table>
+</div>
 
-<!-- <link href='static/css/homepage.css' rel='stylesheet'> -->
+<link href='static/css/homepage.css' rel='stylesheet'>
 
 <script src='http://code.jquery.com/jquery.js'></script>
 <script src ='/static/JS/edit_review.js'></script>
