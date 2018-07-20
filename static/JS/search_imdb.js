@@ -6,10 +6,8 @@ function searchMovieByTitle(evt){
     // constract API request to search movies by title
     evt.preventDefault();
     let title = $('#movietitleIMDb').val();
-    console.log(title);
     let url = 'http://www.omdbapi.com/?s=' + title + '&type=movie&apikey=' + API_KEY
-    console.log(url);
-
+    
    $.get(url, showSearchResults)
 }
 
@@ -18,7 +16,7 @@ function showSearchResults(results){
     
     let search_results=results['Search'];
     if (search_results){
-        $('table').empty();
+        $('#movie_search').empty();
        console.log(search_results);
         let tb_row;
         let title, poster, year, imdb_id;
@@ -38,7 +36,7 @@ function showSearchResults(results){
            console.log(year);
 
             tb_row = `<tr><td><input type='radio' name='imdb_id_radio' id='imdb_id_radio' value=${imdb_id} ></td>
-                        <td><img src=${poster} width='50' hight='50'></td>
+                        <td><img src=${poster} width='50' hight='70'></td>
                         <td>${title}</td>
                         <td>${year}</td>
                     </tr>`;
