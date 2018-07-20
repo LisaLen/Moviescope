@@ -8,34 +8,55 @@
 
 {% endblock %}
 {% block content %}
-<div class="container">
-<p>
+<div class="container-fluid">
+<div class='row'>
+  
+  <div class='col-5'>
     <form action='/add-movie-to-journal'>
-    <span>Movie title: <input type='text' id='movietitle' name='title' required>  
-    IMDb_ID: <input type='text' id='imdbid' name='imdbid' required>
-    IMDB rating: <input type='text' id='imdb_rating' name='imdb_rating' required>
-    Release date: <input type='text' id='released' name='released' required>
-    Genre: <input type='text' id='genre' name='genre' required><br>
-    <div>
-        Plot: <br><textarea id='plot' name='plot'></textarea><br>
-     </div>   
+    
+    <div class="form-group">
+      <label for="movietitle">Movie Titile:</label>
+      <input type='text' class="form-control" id='movietitle' name='title' required>  
+    </div>
+      
+    <div class="form-group">
+      <label for="imdbid">  IMDb_ID:</label> <input type='text' id='imdbid' name='imdbid' style='width:100px' required readonly>
+      <label for="imdb_rating">  IMDB rating:</label> <input type='text' id='imdb_rating' name='imdb_rating' style='width:50px' required readonly>
+      <label for="released">Release date:</label><input type='text' id='released' style='width:100px' name='released' required>
+    </div>
+   
+    <div class="form-group">
+        <label for="genre">Genre:</label>
+        <input type='text' id='genre' class="form-control" name='genre' required>
+      </div> 
+
+      <div class="form-group">
+        <label for="plot">Plot:</label>
+        <textarea id='plot' class="form-control"  style='height:80px' name='plot'></textarea>
+    </div>
+
      <input type='hidden' id='movie_url' name='movie_url'>
      <input type='hidden' id='poster_img' name='poster_img'>
-    <div>
-        Enter Your Rating: <input type='number' name='rating' class="rating rating-loading" data-min="1" data-max="5" data-step="1" value="0" required><br>
-    <p>Write Your Review:</p>
     
-        <textarea name='review' required></textarea>
-    </div><br>
-   <!--  Date: <input type='text' name='review_date'><br> -->
-    <input type='submit' value='Add Movie to Journal'><br><br>
-<script src='http://code.jquery.com/jquery.js'></script>
-<script src ='static/JS/search_imdb.js'></script>
-<table id='movie_search'>
-   
-</table>
+    <div>
+      <input type='number' id='rating' name='rating' class="rating rating-loading" data-min="1" data-max="5" data-step="1" value="0" required><br>
+    </div>
 
+    <div class="form-group">
+      <label for="review"> Write Your Review:</label>
+      <textarea class="form-control" id='review' name='review' style='height:120px' quired></textarea>
+    </div>
+       
+        <button type="submit" class="btn btn-primary">Add Movie</button>
 
+  </div>
+
+  <div class='col-7'>
+    <script src='http://code.jquery.com/jquery.js'></script>
+    <script src ='static/JS/search_imdb.js'></script>
+    <table id='movie_search'>
+    </table>
+  </div>
 </div>
 
 
