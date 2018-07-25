@@ -20,10 +20,10 @@
         <th >Poster</th>
         <th >Movie Title</th>
         <th >Release Date</th>
-        <th >Plot</th>
+        <th width='300'>Plot</th>
         <th >Genre</th>
         <th >IMDb Rating</th>
-        <th >My Rating</th>
+        <th width='70'>My Rating</th>
         <th >My Review</th>
         <th >Review Date</th>
         <th></th>
@@ -39,7 +39,7 @@
         {% set movie = movie_review[0] %} 
         {% set review = movie_review[1] %}
         <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
-        <td width='120'><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
+        <td width='150'><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
         <td>{{ movie.usa_release_date }}</td>
         <td>{{ movie.plot }}</td>
         
@@ -48,9 +48,19 @@
         {{ genre.genre_title }},
         {% endfor %}</td>
 
-        <td>{{movie.imdb_rating }}</td>
-        <td  class='rating'>{{review.rating }}</td>
-        <td  class='review' width='400'>{{review.review }}</td>
+        <td style='text-align:center'>{{movie.imdb_rating }}</td>
+        <td  class='rating' width='70'>            
+
+            {% for i in range (0, review.rating) %}
+                <span><i class="text-warning fas fa-star" style="font-size:7px"></i></span>
+            {% endfor %}
+          
+
+
+
+
+           </td>
+        <td  class='review' width='350'>{{review.review }}</td>
         <td class='date_review'>{{review.date_review }}</td>
 
         <!-- Trigger/Open The Modal -->
@@ -75,7 +85,7 @@
                     <form>
                     <input type='hidden' name='movie_id' value='{{movie.movie_id}}'>
                     
-                    <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1"><br >
+                    <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1" ><br >
                     
                    <textarea id='new_review' name='review' value=>{{ review.review }}</textarea><br>
                    <button class='btn-modal' type='button'  data-dismiss='modal' >Cancel</button>

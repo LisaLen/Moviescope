@@ -22,43 +22,31 @@ def open_singin_singup_page():
 
    
 
-@app.route('/sign-in', methods=['GET', 'POST'])
+@app.route('/sign-in', methods=['POST'])
 def sin_in():
     '''Action for login form; log a user in'''
-    if request.method == 'POST':
-        
-        email = request.form['email']
-        password = request.form['password']
-        
-        #query to get user object using email
-        user = User.query.filter_by(email=email).first()
-        print('######################')
-        print('\n')
-        print('\n')
-        print('\n')
-        print('\n')
-        print(user)
-        print('\n')
-        print('\n')
-        print('######################')
-        
-        if user:
-            if password == user.password:
-                #fetchs user_id for loged-in user
-                user_id = User.query.filter_by(email=email).one().user_id
-                session['current_user'] = user_id
-                fname = user.fname
-                lname = user.lname
-                flash (f'Logged in as {fname} {lname}' )
-                return redirect('/homepage')
-            else: 
-                flash('Wrong password')
-                return redirect('/')
+  
+    email = request.form.get('email')
+    password = request.form.get('password')
+    
+    #query to get user object using email
+    user = User.query.filter_by(email=email).first()
+            
+    if user:
+        if password == user.password:
+            #fetchs user_id for loged-in user
+            user_id = User.query.filter_by(email=email).one().user_id
+            session['current_user'] = user_id
+            fname = user.fname
+            lname = user.lname
+            flash (f'Logged in as {fname} {lname}' )
+            return redirect('/homepage')
         else: 
-            flash ('Username doesn\'t exist')
+            flash('Wrong password')
             return redirect('/')
-    else:
-        return redirect('/homepage')
+    else: 
+        flash ('Username doesn\'t exist')
+        return redirect('/')
 
 @app.route('/logout')
 def logout():
@@ -67,30 +55,17 @@ def logout():
     # user = User.query.filter_by(login=login).one()
     return redirect('/')
 
-# @app.route('/sign-up', methods=['POST'])
-# def sign_up():
-#     '''Check is email exists in DB'''
-
-#     email = request.form['email']
-#     user = User.query.filter_by(email=email).first()
- 
-#     if user is None:
-#         return render_template('new_user_registration.html', email=email)
-#     else:
-#         flash (f'Username with email: {email} already exists in databese')
-#         return redirect('/')
-
 
 @app.route('/sign-up', methods=['POST'])
 def register_new_user():
 
    
-    email = request.form['email']
+    email = request.form.get('email')
     user = User.query.filter_by(email=email).first()
     if not user:
-        password = request.form['password']
-        fname = request.form['fname']
-        lname = request.form['lname']
+        password = request.form.get('password')
+        fname = request.form.get('fname')
+        lname = request.form.get('lname')
         new_user = User(email=email, password=password, 
                     fname=fname, lname=lname, )
         db.session.add(new_user)
@@ -108,7 +83,8 @@ def open_homepage():
     if 'current_user' in session: 
                        
         #returns [(<Movie>, <Review>)]
-        movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()  
+        movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()
+        movies_reviews.reverse()  
      
         return render_template('homepage.html', movies_reviews=movies_reviews)
     
@@ -119,7 +95,10 @@ def open_homepage():
 def link_to_add_movie():
     ''' Show add_moview page'''
 
-    return render_template('add_movie.html')
+    if 'current_user' in session: 
+        return render_template('add_movie.html')
+    else: 
+        return render_template('signin_signup.html')
 
 
 def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date, poster_img):

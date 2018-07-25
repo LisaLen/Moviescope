@@ -1,6 +1,7 @@
 # Models and database functions for Movie Journal project
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 db = SQLAlchemy()
 
@@ -114,14 +115,84 @@ class MovieGenre(db.Model):
                 f'<movie_id = self.movie_id>'
                 f'<genre_id = self.genre_id>')
 
+def set_val_user_id():
+        """Set value for the next user_id after seeding database"""
+
+        # Get the Max user_id in the database
+        result = db.session.query(func.max(User.user_id)).one()
+        max_id = int(result[0])
+      
+        # Set the value for the next user_id to be max_id + 1
+        query = "SELECT setval('users_user_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': max_id + 1})
+        db.session.commit()
+
+
+def example_data():
+    """Create example data for the test database."""
+
+
+    user1 = User(user_id=1, email='testemail1@gmail.com', password='123', fname='Test1', lname='Supertest1')
+    user2 = User(user_id=2, email='testemail2@gmail.com', password='456', fname='Test2', lname='Supertest2')
+
+    genre_test = Genre(genre_title='test_genre')
+
+    movie1 = Movie( imdb_id = 'tt0112462', movie_url = 'https://www.warnerbros.com/batman-forever',
+                    imdb_rating=5.4, 
+                    title='Batman Forever',
+                    plot='''Batman must battle former district attorney Harvey Dent, who is 
+                    now Two-Face and Edward Nygma, The Riddler with help from an amorous psychologist 
+                    and a young circus acrobat who becomes his sidekick, Robin.''',
+                    usa_release_date='2008-07-16',
+                    genres=[genre_test])
+
+    movie2 = Movie( imdb_id='tt0109813', movie_url='https://www.facebook.com/TheFlintstonesMovie',
+                    imdb_rating=4.8, 
+                    title='The Flintstones',
+                    plot='''In this live-action feature of the cartoon show, 
+                    Fred Flintstone finally gets the job he's always wanted, but it may just come at a price.''',
+                    usa_release_date='1994-05-27',
+                    genres=[genre_test])
+
+    
+  
+
+    review1 = Review(movie=movie1,
+                      user =user1,                   
+                      review ='I don\'t really like it',
+                      rating = 3)
+    review2 = Review(movie=movie2,
+                      user =user1,                   
+                      review ='It\s funny, but too old',
+                      rating = 4)
+    review3 = Review(movie=movie1,
+                      user =user2,                   
+                      review ='Supper cool',
+                      rating = 5)
+    review4 = Review(movie=movie2,
+                      user =user2,                   
+                      review ='boring',
+                      rating = 1)
+
+    
+    db.session.add_all([user1, user2, movie1, movie2])
+
+    db.session.add_all([review1, review2, review3, review4, genre_test])
+    
+    db.session.commit()
+
+
+    set_val_user_id()
 
 
 
-def connect_to_db(app):
+
+
+def connect_to_db(app, db_uri="postgresql:///journal"):
     '''Connect the database to Flask app'''
 
     #Configure to use PostgreSQL DB
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///journal'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True
     db.app = app
