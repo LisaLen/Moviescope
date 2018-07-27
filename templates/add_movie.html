@@ -1,5 +1,16 @@
 {% extends 'base.html' %}
 {%block title %} Add Movie {% endblock %}
+{% block navbar1 %}
+
+
+
+<li class="nav-item">
+    <a class="nav-link" href='/wish-list'>Wish List</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href='/recommendations'>Recommendations</a>
+</li>
+{% endblock %}
 {% block navbar2 %}
  <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id='movietitleIMDb'>
@@ -20,9 +31,10 @@
     </div>
       
     <div class="form-group">
-      <label for="imdbid">  IMDb_ID:</label> <input type='text' id='imdbid' name='imdbid' style='width:100px' required readonly>
-      <label for="imdb_rating">  IMDB rating:</label> <input type='text' id='imdb_rating' name='imdb_rating' style='width:50px' required readonly>
-      <label for="released">Release date:</label><input type='text' id='released' style='width:100px' name='released' required>
+
+      <label for="imdbid">IMDb_ID:</label> <input class="form-group" type='text' id='imdbid' name='imdbid' style='width:70px' required readonly>
+      <label for="imdb_rating">IMDB rating:</label> <input class="form-group" type='text' id='imdb_rating' name='imdb_rating' style='width:50px' required readonly>
+      <label for="released">Release date:</label><input class="form-group" type='text' id='released' style='width:100px' name='released' required readonly>
     </div>
    
     <div class="form-group">
@@ -37,6 +49,9 @@
 
      <input type='hidden' id='movie_url' name='movie_url'>
      <input type='hidden' id='poster_img' name='poster_img'>
+
+     <button type="submit" class="btn btn-primary" id='withlist_btn'>Add To Wish List</button>
+
     
     <div>
       <input type='number' id='rating' name='rating' class="rating rating-loading" data-min="1" data-max="5" data-step="1" value="0" required><br>
@@ -47,13 +62,13 @@
       <textarea class="form-control" id='review' name='review' style='height:120px' quired></textarea>
     </div>
        
-        <button type="submit" class="btn btn-primary">Add Movie</button>
+        <button type="submit" class="btn btn-primary" id='add-movie-btn'>Add Movie</button>
 
   </div>
 
   <div class='col-7'>
     <script src='http://code.jquery.com/jquery.js'></script>
-    <script src ='static/JS/search_imdb.js'></script>
+    <script src ='static/JS/add_movie.js'></script>
     
   <table class="table table-dark">
   <thead>

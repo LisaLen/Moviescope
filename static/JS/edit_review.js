@@ -2,6 +2,7 @@
 function editReview(evt){
       
     let form = $(this).closest('form') // get edit review form object
+    console.log(form)
 
     let rating =$(this).closest('tr').find('.rating');
     let review =$(this).closest('tr').find('.review');

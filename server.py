@@ -4,7 +4,7 @@ from flask import (Flask, request, render_template, redirect, flash, session,jso
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, User, Movie, Review, Genre, MovieGenre
+from model import connect_to_db, db, User, Movie, Review, Genre, MovieGenre, WishList
 import datetime
 
 app = Flask(__name__)
@@ -100,9 +100,60 @@ def link_to_add_movie():
     else: 
         return render_template('signin_signup.html')
 
+@app.route('/wish-list')
+def open_wish_list():
+    ''' Show wish_list page'''
 
-def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date, poster_img):
-    '''Create new movie row in DB, returns Movie object'''
+    if 'current_user' in session: 
+        user = User.query.filter_by(user_id=session['current_user']).one()
+        wishlist = user.wishlist
+        wishlist.reverse()
+
+        # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
+        # wishlist.reverse() 
+
+        return render_template('wish_list.html', wishlist=wishlist)
+
+        
+    else: 
+        return render_template('signin_signup.html')
+
+
+
+def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date, poster_img, genres):
+    '''Create new movie row in DB, returns Movie object
+    genres =[Genre1, Genre2...]'''
+
+    
+    #creating list of Genres objects and also adding new genres to DB
+
+    #fetching existing genres in DB
+    genres_tpl = db.session.execute('SELECT genre_title FROM genres').fetchall()
+
+    genres_inst = []
+    #will stor new genres in list to add to DB with one commit
+    new_genres_lst =[]
+    
+    for genre in genres:
+        if (genre, ) not in genres_tpl: 
+
+            #add new genre into Genres table
+            new_genre = Genre(genre_title=genre)
+            
+            new_genres_lst.append(new_genre)
+            
+        else:
+            #fetching genre object for genre existing in DB
+            new_genre = Genre.query.filter_by(genre_title=genre).one()
+            
+            
+
+        genres_inst.append(new_genre)
+
+
+    if new_genres_lst != []:
+        db.session.add_all(new_genres_lst)
+    
 
     new_movie = Movie(imdb_id=imdb_id, 
                       movie_url=movie_url,
@@ -110,10 +161,10 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
                       title=title,
                       plot=plot,
                       usa_release_date=release_date,
-                      poster_img=poster_img)
+                      poster_img=poster_img,
+                      genres=genres_inst)
 
-
-
+    
     db.session.add(new_movie) 
     db.session.commit()
 
@@ -134,29 +185,6 @@ def create_new_review(movie_id, user_id, review, rating, date_review):
 
     return new_review
 
-def create_movie_genres_connection(movie_id, genres):
-    '''Takes list of genres and build connection with given movie_id'''
-
-    #checking, if we have genres of new_movie in DB and fetching genre_id
-    genres_tpl = db.session.execute('SELECT genre_title FROM genres').fetchall()
-  
-
-    for genre in genres:
-        if (genre, ) not in genres_tpl: 
-
-            #add new genre into Genres table
-            new_genre = Genre(genre_title=genre)
-            db.session.add(new_genre)
-            db.session.commit()
-
-        genre_id = Genre.query.filter_by(genre_title=genre).first().genre_id
-        #create new relation genre_id for new_movie in Genres_Movies table
-        new_movie_genre=MovieGenre(movie_id=movie_id, genre_id=genre_id)
-        db.session.add(new_movie_genre)
-
-    db.session.commit()
-    print('movie - genre connection is created')
-
 
 @app.route('/check-imdbid-indb')
 def chek_if_movie_in_journal():
@@ -170,16 +198,89 @@ def chek_if_movie_in_journal():
         return 'True' 
     return 'False'   
 
+@app.route('/chek-imdbid-in-wishlist')
+def check_if_movie_in_wishlist():
+    ''' Checks if selected movie in DB and in current_user's wishlist 
+    Returns dictionary{movie_in_DB: True of False,
+                        movie_in_wishlist: True or False} '''
+
+    imdb_id = request.args.get('imdb_id')
+    current_user = User.query.filter_by(user_id=session.get('current_user')).one()
+    new_movie = Movie.query.filter_by(imdb_id=imdb_id).first()
+
+    results = {'movie_in_db': False,
+               'movie_in_wishlist': False}
+    if new_movie:
+        results['movie_in_db'] = True
+        if new_movie in current_user.wishlist:
+            results['movie_in_wishlist'] = True
+
+           
+    return jsonify(results)
+
+
+@app.route('/add-movie-to-db')
+def add_movie_to_database():
+    '''add new moview to DB'''
+
+   
+    imdb_id = request.args.get('imdb_id')
+    movie_title = request.args.get('movie_title')
+    imdb_rating = request.args.get('imdb_rating')
+    release_date = request.args.get('released')
+    plot = request.args.get('plot')
+    movie_url = request.args.get('movie_url')
+    poster_img = request.args.get('poster_img')
+    genres = request.args.get('genre').split(', ') #string with several genres; converting string to list
+
+            
+    new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
+                          movie_title, plot, release_date, poster_img, genres)
+
+    db.session.add(new_movie)
+    try:
+        db.session.commit()
+        return 'OK'
+    except:
+        return 'ERROR'
+
+   
+ 
+@app.route('/add-to-wishlist')
+def add_movie_to_user_wishlist():
+    '''add movie to current user's wish list'''
+
+    imdb_id = request.args.get('imdb_id')
+    
+    movie = Movie.query.filter_by(imdb_id=imdb_id).one()
+
+    current_user = User.query.filter_by(user_id=session.get('current_user')).one()
+    
+    try:
+        current_user.wishlist.append(movie)
+        
+        db.session.add(current_user)
+        db.session.commit()
+        return 'OK'
+
+    except:
+        return 'ERROR'     
+
+
+
+
 @app.route('/add-movie-to-journal')
 def add_new_movie():
     '''Add new movie, rating and review into journal'''
 
     #get all imdb_ids from DB, it returns [(imdb_id, ).....]
     imdb_id = request.args.get('imdbid')
-    movie_title = request.args.get('title')
-    
+
+        
     if not Movie.query.filter_by(imdb_id=imdb_id).first():
         #if given imdb_id doesn't exist in DB, then create new_movie in DB
+        movie_title = request.args.get('title')
+        genres = request.args.get('genre').split(', ') #string with several genres; converting string to list
         imdb_rating = request.args.get('imdb_rating')
         release_date = request.args.get('released')
         
@@ -188,13 +289,13 @@ def add_new_movie():
         poster_img = request.args.get('poster_img')
             
         new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
-                          movie_title, plot, release_date, poster_img)
+                          movie_title, plot, release_date, poster_img, genres)
 
     else:
         new_movie=Movie.query.filter_by(imdb_id=imdb_id).one()
         
 
-    genres = request.args.get('genre').split(', ') #string with several genres; converting string to list
+    
     rating = int(request.args.get('rating'))
     review = request.args.get('review')
 
@@ -203,7 +304,7 @@ def add_new_movie():
 
     new_review = create_new_review(new_movie.movie_id, session.get('current_user'), review, rating, date_review)
 
-    create_movie_genres_connection(new_movie.movie_id, genres)
+    # create_movie_genres_connection(new_movie.movie_id, genres)
      
     flash ('movie was added')
 
@@ -247,8 +348,19 @@ def edit_rating_and_review():
     except:
         return 'ERROR'     
 
+@app.route('/delete-from-wishlist.json')
+def delete_movie_from_wishlist():
+    '''deletes movie_id-user_id relationship from wishlists. It doesn't delete movie from DB'''
 
+    movie_id = request.args.get('movie_id')
 
+    #fetching review for given movie_id and current user
+    try:
+        WishList.query.filter_by(movie_id=movie_id, user_id=session.get('current_user')).delete()
+        db.session.commit()
+        return 'confirmed'
+    except: 
+        return 'ERROR' 
 
 
 if __name__ == '__main__':

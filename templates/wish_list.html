@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %} Movie Journal {% endblock %}
+{% block navbar1 %}
+<li class="nav-item">
+    <a class="nav-link" href='/add-movie'>Add Movie</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href='/recommendations'>Recommendations</a>
+</li>
+
+{% endblock %}
+{% block content %}
+<p><h2>My Wish List</h2></p>
+
+<div style="overflow-x:auto">
+<table id='tb_wishlist'>   
+    <thead id='th_wishlist'>     
+        <th >Poster</th>
+        <th >Movie Title</th>
+        <th >Release Date</th>
+        <th width='300'>Plot</th>
+        <th >Genre</th>
+        <th >IMDb Rating</th>
+        <th></th>
+        
+        <th></th>
+        <th></th>
+    </thead>
+
+    <tbody>
+
+    {% for movie in wishlist %}
+    <tr id='tr_journal'>
+        
+        <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
+        <td width='150'><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
+        <td>{{ movie.usa_release_date }}</td>
+        <td>{{ movie.plot }}</td>
+        
+        <td style='text-align:center'>
+        {% for genre in movie.genres %}
+        {{ genre.genre_title }},
+        {% endfor %}</td>
+
+        <td style='text-align:center'>{{movie.imdb_rating }}</td>
+
+
+
+<!-- Trigger/Open The Modal -->
+ <td><button type='button' id='from_wish_list_to_journal' class='btn' data-toggle='modal' data-target='#modal-tojournal{{movie.movie_id}}' value='{{movie.imdb_id}}' >To My Journal </button>
+             
+        <!-- EDIT REVIEW POPUP WINDOW-->
+
+        <!-- The Modal -->
+        <div class="modal" id="modal-tojournal{{movie.movie_id}}" role='dialog'>
+
+        <!-- Modal content -->
+        <div class="modal-dialog">
+            <div class='modal-content'>
+                
+                <div class='modal-header'>
+                    <h4 class='modal-title'> Write your review for {{movie.title}}</h4>
+                    <button type='button' class='close' data-dismiss='modal'>X</button>
+                </div>
+
+                <div class='modal-body'>
+                <form>
+                    <input type='hidden' name='imdb_id' value='{{movie.imdb_id}}'>
+                    
+                    <input class="rating rating-loading" id='rating' type='number' name ='rating' value='0' data-min="1" data-max="5" data-step="1" ><br >
+                    
+                   <textarea id='new_review' name='review' >Enter your review here</textarea><br>
+                   <button class='btn-modal' type='button'  data-dismiss='modal' >Cancel</button>
+
+                    <button class='btn-modal' type='button' id='confirm-add_movie' data-dismiss='modal' >Confirm</button>
+                    
+                </form>
+                
+                </div> <!-- end .model-body-->
+            </div> <!-- end .model-content -->
+        </div> <!--end .model-dialog  -->
+        </div> <!--end .model -->
+
+        <!-- END POPUP MODEL -->
+
+       
+        </td>
+        <td><button  id='where_to_watch' class='btn'>Where to Watch </button></td>
+       
+          
+        <td><button  id='deletefrom_wishlist_btn' class='btn' value='{{ movie.movie_id }}'>Delete </button></td>
+
+        
+    </tr>
+       
+    {% endfor %}
+    </tbody>    
+</table>
+</div>
+
+<link href='static/css/homepage.css' rel='stylesheet'>
+ <script src='http://code.jquery.com/jquery.js'></script>
+<script src ='static/JS/wish_list.js'></script>
+
+
+
+
+
+
+{% endblock %}

@@ -17,6 +17,12 @@ class User(db.Model):
     password = db.Column(db.String(24), nullable=False)
     fname = db.Column(db.String(32), nullable=True)
     lname = db.Column(db.String(40), nullable=True)
+
+    # relationship with movies which are in wish list
+
+    wishlist = db.relationship('Movie',
+                                secondary='wishlists',
+                                backref='users')
     
     def __repr__(self):
         '''Provides helpful representation when printed'''
@@ -43,6 +49,8 @@ class Movie(db.Model):
     genres = db.relationship('Genre', 
                              secondary='movies_genres',
                              backref='movies')
+
+    #movie.users - shows list of users which wishlists contain particular movie
 
     def __repr__(self):
         '''Provides helpful representation when printed'''
@@ -115,6 +123,21 @@ class MovieGenre(db.Model):
                 f'<movie_id = self.movie_id>'
                 f'<genre_id = self.genre_id>')
 
+class WishList(db.Model):
+    '''user's wish list of movies - assisiation bable for user_id and movie_id in wish list'''
+
+    __tablename__ = 'wishlists'
+
+    wishlist_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    user_id = db.Column(db.Integer, 
+                        db.ForeignKey('users.user_id'), nullable=False)
+    movie_id = db.Column(db.Integer, 
+                         db.ForeignKey('movies.movie_id'), nullable=False)
+
+
+
+
+
 def set_val_user_id():
         """Set value for the next user_id after seeding database"""
 
@@ -132,10 +155,11 @@ def example_data():
     """Create example data for the test database."""
 
 
-    user1 = User(user_id=1, email='testemail1@gmail.com', password='123', fname='Test1', lname='Supertest1')
-    user2 = User(user_id=2, email='testemail2@gmail.com', password='456', fname='Test2', lname='Supertest2')
-
-    genre_test = Genre(genre_title='test_genre')
+   
+    genre_test1 = Genre(genre_title='test_genre1')
+    genre_test2 = Genre(genre_title='test_genre2')
+    genre_test3 = Genre(genre_title='test_genre3')
+    genre_test4 = Genre(genre_title='test_genre4')
 
     movie1 = Movie( imdb_id = 'tt0112462', movie_url = 'https://www.warnerbros.com/batman-forever',
                     imdb_rating=5.4, 
@@ -144,7 +168,7 @@ def example_data():
                     now Two-Face and Edward Nygma, The Riddler with help from an amorous psychologist 
                     and a young circus acrobat who becomes his sidekick, Robin.''',
                     usa_release_date='2008-07-16',
-                    genres=[genre_test])
+                    genres=[genre_test1])
 
     movie2 = Movie( imdb_id='tt0109813', movie_url='https://www.facebook.com/TheFlintstonesMovie',
                     imdb_rating=4.8, 
@@ -152,9 +176,24 @@ def example_data():
                     plot='''In this live-action feature of the cartoon show, 
                     Fred Flintstone finally gets the job he's always wanted, but it may just come at a price.''',
                     usa_release_date='1994-05-27',
-                    genres=[genre_test])
+                    genres=[genre_test2])
 
-    
+    movie3 = Movie( imdb_id='tt0109854', movie_url='TestURL',
+                    imdb_rating=3, 
+                    title='Full Cycle',
+                    plot='''TestPlot3''',
+                    usa_release_date='1994-11-27',
+                    genres=[genre_test3, genre_test4])
+
+    movie4 = Movie( imdb_id='tt0145678', movie_url='TestURL4',
+                    imdb_rating=10, 
+                    title='WorkingTitle',
+                    plot='''TestPlot4''',
+                    usa_release_date='1981-05-27',
+                    genres=[genre_test1, genre_test4])
+
+    user1 = User(user_id=1, email='testemail1@gmail.com', password='123', fname='Test1', lname='Supertest1', wishlist=[movie3, movie4])
+    user2 = User(user_id=2, email='testemail2@gmail.com', password='456', fname='Test2', lname='Supertest2')
   
 
     review1 = Review(movie=movie1,
@@ -175,9 +214,8 @@ def example_data():
                       rating = 1)
 
     
-    db.session.add_all([user1, user2, movie1, movie2])
-
-    db.session.add_all([review1, review2, review3, review4, genre_test])
+    db.session.add_all([user1, user2, movie1, movie2, movie3, movie4])
+    db.session.add_all([review1, review2, review3, review4, genre_test1, genre_test2, genre_test3, genre_test4])
     
     db.session.commit()
 

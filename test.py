@@ -147,7 +147,6 @@ class JournalTestsDatabase(unittest.TestCase):
         self.assertIn(b'testingplot', result.data)
         self.assertIn(b'2018-07-24', result.data)
         self.assertIn(b'testgenre1', result.data )
-        self.assertIn(b'<td  class=\'rating\'>5</td>', result.data)
         self.assertIn(b'testing review</td>', result.data)
 
 
@@ -199,7 +198,6 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         self.assertIn(b'Batman must battle former', result.data)
         self.assertIn(b'2008-07-16', result.data)
         self.assertIn(b'test_genre', result.data )
-        self.assertIn(b'<td  class=\'rating\'>3</td>', result.data)
         self.assertIn(b'really like it</td>', result.data)
 
 
@@ -224,8 +222,27 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         result = self.client.get('/check-imdbid-indb', query_string={'imdb_id': 'tt0112462'})
         self.assertEqual(result.data, b'True')
 
+    def test_wish_list_in_session(self):
+        '''tests /add-movie route when user in session'''
 
+        result = self.client.get('/wish-list')
 
+        self.assertIn(b'My Wish List', result.data)
+
+    def test_wish_list_table(self):
+        result = self.client.get('/wish-list')
+
+        self.assertIn(b'img src=', result.data)
+        self.assertIn(b'Full Cycle </td>', result.data)      
+        self.assertIn(b'TestPlot3', result.data)
+        self.assertIn(b'test_genre3', result.data )
+
+    def test_delete_from_wishlist(self):
+        '''tests if function deletes movie from current user's journal'''
+
+        result = self.client.get('/delete-from-wishlist.json', query_string={'movie_id': '3'})
+        
+        self.assertEqual(result.data, b'confirmed')
 
 
 class MyAppUnitTestCase(unittest.TestCase):
