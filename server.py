@@ -4,6 +4,10 @@ from flask import (Flask, request, render_template, redirect, flash, session,jso
 
 from flask_debugtoolbar import DebugToolbarExtension
 
+#Passlib - for password encryption
+import uuid
+import hashlib
+
 from model import connect_to_db, db, User, Movie, Review, Genre, MovieGenre, WishList
 
 import RecombeeAPI
@@ -30,6 +34,17 @@ def open_singin_singup_page():
     else:
         return redirect('/homepage')
 
+def hash_password(password):
+    # uuid is used to generate a random number
+    salt = uuid.uuid4().hex
+    return hashlib.sha256(salt.encode() + password.encode()).hexdigest() + ':' + salt
+    
+def check_password(hashed_password, user_password):
+    password, salt = hashed_password.split(':')
+
+
+    return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
+    
    
 
 @app.route('/sign-in', methods=['POST'])
@@ -38,12 +53,13 @@ def sin_in():
   
     email = request.form.get('email')
     password = request.form.get('password')
-    
+   
     #query to get user object using email
     user = User.query.filter_by(email=email).first()
+    print(user.password)
             
     if user:
-        if password == user.password:
+        if check_password(user.password, password):
             #fetchs user_id for loged-in user
             user_id = User.query.filter_by(email=email).one().user_id
             session['current_user'] = user_id
@@ -66,6 +82,8 @@ def logout():
     return redirect('/')
 
 
+
+
 @app.route('/sign-up', methods=['POST'])
 def register_new_user():
 
@@ -73,7 +91,7 @@ def register_new_user():
     email = request.form.get('email')
     user = User.query.filter_by(email=email).first()
     if not user:
-        password = request.form.get('password')
+        password = hash_password(request.form.get('password'))
         fname = request.form.get('fname')
         lname = request.form.get('lname')
         new_user = User(email=email, password=password, 

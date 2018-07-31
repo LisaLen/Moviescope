@@ -41,6 +41,32 @@ def to_watch(movie_title, release_year):
                   'runtime': runtime,
                   'buy': [], 'rent': [], 'cinema': None}
 
+
+################ TO GO BACK TO THIS PART - FILTER LIST WITH ONE LAMBDA##############################
+
+    # my_offers_buy = list(filter(lambda offer_buy: offer_buy['monetization_type'] == 'buy' and 
+    #     offer_buy['provider_id'] in (2, 3, 10), offers ))
+
+    # my_offers_buy.sort(key= lambda y: y['retail_price'])
+
+    # print(my_offers_buy)
+
+    # # my_offers_buy = list(filter(lambda offer: (offer['monetization_type'] == 'buy' and 
+    # #     (offer['provider_id'] == 2 or offer['provider_id'] == 3 or 
+    # #     offer['provider_id'] == 10))   or (offer['monetization_type'] == 'rent' and 
+    # #     (offer['provider_id'] == 2 or offer['provider_id'] == 3 or 
+    # #     offer['provider_id'] == 10)), offers ))
+
+    # my_offers_rent = list(filter(lambda offer_rent: offer_rent['monetization_type'] == 'buy' and 
+    #     offer_rent['provider_id'] in (2, 3, 10), offers ))
+
+    # my_offers_rent.sort(key= lambda y: y['retail_price'])
+
+    # my_offers_rent = list(filter(lambda offer_rent: offer_rent['monetization_type'] == 'buy' and 
+    #     offer_rent['provider_id'] in (2, 3, 10), offers ))
+
+################ ###################################################
+
     for offer in offers:
 
         if offer['monetization_type'] == 'buy':
