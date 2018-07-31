@@ -2,11 +2,14 @@
 {% block title %} Movie Journal {% endblock %}
 {% block navbar1 %}
 <li class="nav-item">
-    <a class="nav-link" href='/add-movie'>Add Movie</a>
+    <a class="nav-link" href='/homepage'>My Journal</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href='/recommendations'>Recommendations</a>
+    <a class="nav-link" href='/add-movie'>Add Movie</a>
 </li>
+<!-- <li class="nav-item">
+    <a class="nav-link" href='/recommendations'>Recommendations</a>
+</li> -->
 
 {% endblock %}
 {% block content %}
@@ -85,7 +88,12 @@
 
        
         </td>
-        <td><button  id='where_to_watch' class='btn'>Where to Watch </button></td>
+        <td>
+            <!-- <form action='/watch-it?<movie_title={{movie.title}}>'> -->
+            <!-- ?movie_title={{movie.title}}&released={{movie.released}} -->
+            <a href="/watch-it?movie_title={{movie.title}}&released={{movie.usa_release_date}}&poster_img={{ movie.poster_img }}">
+            <button  type='submit' id='where_to_watch' class='btn'>Watch it </button></a></td>
+        </form>
        
           
         <td><button  id='deletefrom_wishlist_btn' class='btn' value='{{ movie.movie_id }}'>Delete </button></td>

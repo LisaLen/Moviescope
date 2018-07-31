@@ -5,7 +5,17 @@ from flask import (Flask, request, render_template, redirect, flash, session,jso
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, User, Movie, Review, Genre, MovieGenre, WishList
+
+import RecombeeAPI
+
 import datetime
+
+import requests
+
+import os # to access OS environment variables
+
+import JustWatchAPI
+
 
 app = Flask(__name__)
 
@@ -83,10 +93,19 @@ def open_homepage():
     if 'current_user' in session: 
                        
         #returns [(<Movie>, <Review>)]
+        recommendations = RecombeeAPI.get_recommendations_for_user(session['current_user'])
+
+        recom_movies = []
+
+        for recommendation in recommendations:
+            recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
+            recom_movie = requests.get(recom_url).json()
+            recom_movies.append(recom_movie)
+
         movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()
         movies_reviews.reverse()  
      
-        return render_template('homepage.html', movies_reviews=movies_reviews)
+        return render_template('homepage.html', movies_reviews=movies_reviews, recom_movies=recom_movies)
     
     else: 
         return render_template('signin_signup.html')
@@ -118,7 +137,89 @@ def open_wish_list():
     else: 
         return render_template('signin_signup.html')
 
+@app.route('/movie-page')
+def open_movie_page():
+    ''' Show movie page'''
 
+    if 'current_user' in session: 
+        user = User.query.filter_by(user_id=session['current_user']).one()
+
+        imdb_id = request.args.get('imdb_id')
+
+        #create url for OMDB API request
+        url = 'http://www.omdbapi.com/?i=' + imdb_id + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
+        print(url)
+
+        movie_info = requests.get(url).json()
+        print(movie_info)
+
+        #fetching recommendations for pcurrent user
+        recommendations = RecombeeAPI.get_recommendations_for_user_item(imdb_id, user.user_id)
+
+        recom_movies = []
+
+        for recommendation in recommendations:
+            recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
+            recom_movie = requests.get(recom_url).json()
+            recom_movies.append(recom_movie)
+
+        #check if we have movie in current user's journal    
+        review = db.session.query(Review).join(Movie).filter(Movie.imdb_id==imdb_id, Review.user_id==user.user_id).first()
+
+        if review:
+            movie_in_journal = True
+            rating = review.rating
+
+        else:
+            movie_in_journal = False
+            rating = None
+
+
+        #check if imdb_id in current user's wishlist
+
+        movie = Movie.query.filter_by(imdb_id=imdb_id).first()
+        print(movie)
+        if movie:
+            w = WishList.query.filter_by(user_id=user.user_id, movie_id=movie.movie_id).first()
+            if w:
+                in_wishlist = True
+                print(in_wishlist)
+            else:
+                in_wishlist = False
+                print(in_wishlist)
+
+        # movie = Movie.query.filter_by(imdb_id=imdb_id).one()
+        # user = User.query.filter_by(user_id=session['current_user']).one()
+        # wishlist = user.wishlist
+        # wishlist.reverse()
+
+        # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
+        # wishlist.reverse() 
+
+        return render_template('movie_page.html', movie=movie_info, 
+                                                  recom_movies=recom_movies, 
+                                                  movie_in_journal=movie_in_journal,
+                                                  rating=rating,
+                                                  in_wishlist=in_wishlist)
+        # wishlist=wishlist)
+
+        
+    else: 
+        return render_template('signin_signup.html')
+
+@app.route('/watch-it')
+def show_watch_options():
+    movie_title = request.args.get('movie_title')
+    #taking relseas year only
+    release_year = int(request.args.get('released')[:4])
+    poster_img = request.args.get('poster_img')
+
+    print(movie_title, release_year)
+    where_watch = JustWatchAPI.to_watch(movie_title, release_year)
+    print(where_watch)
+   
+    return render_template('watch_it.html', poster_img=poster_img,
+                                            where_watch=where_watch)
 
 def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date, poster_img, genres):
     '''Create new movie row in DB, returns Movie object

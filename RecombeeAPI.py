@@ -2,35 +2,74 @@ from recombee_api_client.api_client import RecombeeClient
 from recombee_api_client.api_requests import *
 import json
 
-client = RecombeeClient('leniashina', '3LkVzrObkifF37aVdpVaRTunAWrOsHO0AphHv53Y3ijxi9912894T9Heqx3kw8x3')
+import os # to access OS environment variables
 
-with open ('static/dataset/movie_user_ratings.json') as fdata:
-    interactions = json.loads(fdata.read())
+client = RecombeeClient(os.environ['DB_NAME'],
+                        os.environ['SECRET_TOKEN'])
 
-requests  =[]
-    #interate through oll interactions and create object for each interaction
-for interaction in interactions:
+
+def send_new_rating_to_API(userid, imdb_id, rating):
+    '''sends new rating information to recombee.com DB'''
+
+    interaction = {'userid': userid,
+                    'imdb_id': imdb_id,
+                    'rating': rating}
+
     r = AddRating(interaction['userid'],
-                  interaction['imdbid'],
+                  interaction['imdb_id'],
                   interaction['rating'],
                   cascade_create=True)
-    #send single interaction
-    #client.send(r)
+    # try:
+    client.send(r)
+    # return True
 
-    #making a list of interactions
-    requests.append(r)
+    # except APIException as e:
+    #     print(e)
+    #     return False
 
-br = Batch(requests)
-try:
-    # Send the data to Recombee, use Batch for faster processing of larger data
-    print('Send ratings')
-    client.send(br)
+def get_recommendations_for_user(user_id, recoms=6):
+    '''returns list with 5 recommended movies(imdb_id) for given user'''
 
-    # # Get recommendations for user 'user-25'
-    # recommended = client.send(RecommendItemsToUser('user-25', 5))
-    # print("Recommended items: %s" % recommended)
+    
+    #make API request and get response
+    #{'recomms': [{'id': '0120179'}, {'id': '0109813'}, {'id': '0115798'}, {'id': '0121765'}, {'id': '0112462'}], 
+    #'recommId': '974edbca-4840-42d4-ae5e-63b2bcd0eba4'}
 
-except APIException as e:
-    print(e)
+    
+    recommended = client.send(RecommendItemsToUser(str(user_id), recoms))
+    recome_movies = []
+
+    for recom in recommended['recomms']:
+        recom_imdb = 'tt' + str(recom['id'])
+        recome_movies.append(recom_imdb)
+
+    print(recome_movies)
+    return recome_movies
+
+
+
+def get_recommendations_for_user_item(imdb_id, user_id, recoms=6):
+    '''returns list with 5 recommended movies(imdb_id) for given user and given movie'''
+
+    #make API request and get response
+    #{'recomms': [{'id': '0120179'}, {'id': '0109813'}, {'id': '0115798'}, {'id': '0121765'}, {'id': '0112462'}], 
+    #'recommId': '974edbca-4840-42d4-ae5e-63b2bcd0eba4'}
+
+    #given imdb_id: tt0123456, rid off tt with slicing
+    recommended = client.send(RecommendItemsToItem(imdb_id[2:], str(user_id), recoms))
+
+    recome_movies = []
+
+    for recom in recommended['recomms']:
+        recom_imdb = 'tt' + str(recom['id'])
+        recome_movies.append(recom_imdb)
+
+    print(recome_movies)
+    return recome_movies
+
+
+
+
+
 
 

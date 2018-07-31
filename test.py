@@ -43,6 +43,13 @@ class SignInTestCase(unittest.TestCase):
         self.assertIn(b'<h1>Registration</h1>', result.data)
         self.assertIn(b'class="navbar-toggler', result.data)
 
+    def test_wish_list_not_in_session(self):
+        '''test /wish-list when user not in session'''
+
+        result = self.client.get('/wish-list',  follow_redirects=True)
+        self.assertIn(b'<h1>Registration</h1>', result.data)
+        self.assertIn(b'class="navbar-toggler', result.data)
+
 
 
     
@@ -126,7 +133,7 @@ class JournalTestsDatabase(unittest.TestCase):
         self.assertNotIn(b'<span>New user has been added. Please sign-in to continue </span>', result.data)
         self.assertIn(b'Username with email: testemail1@gmail.com already exists in databese', result.data)
 
-    def test_add_movie(self):
+    def test_add_movie_to_journal(self):
         '''tests add_movie form'''
 
         result = self.client.get('/add-movie-to-journal', query_string={'title': 'NewMovie', 
@@ -149,6 +156,8 @@ class JournalTestsDatabase(unittest.TestCase):
         self.assertIn(b'testgenre1', result.data )
         self.assertIn(b'testing review</td>', result.data)
 
+
+     
 
 
 
@@ -235,7 +244,7 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         self.assertIn(b'img src=', result.data)
         self.assertIn(b'Full Cycle </td>', result.data)      
         self.assertIn(b'TestPlot3', result.data)
-        self.assertIn(b'test_genre3', result.data )
+        self.assertIn(b'test_genre', result.data )
 
     def test_delete_from_wishlist(self):
         '''tests if function deletes movie from current user's journal'''
@@ -243,6 +252,44 @@ class FlaskTestsLoggedIn(unittest.TestCase):
         result = self.client.get('/delete-from-wishlist.json', query_string={'movie_id': '3'})
         
         self.assertEqual(result.data, b'confirmed')
+
+    def test_if_movie_in_wishlist(self):
+        '''tests checking result when imdb_id in DB and in current user's wishlist'''  
+
+        result = self.client.get('/chek-imdbid-in-wishlist', query_string={'imdb_id': 'tt0109854'}) 
+
+        self.assertIn(result.data, b'{"movie_in_db":true,"movie_in_wishlist":true}\n')
+
+
+    def test_if_movie_not_in_wishlist(self):
+        '''tests checking result when imdb_id in DB and not in current user's wishlist'''  ''  
+
+        result = self.client.get('/chek-imdbid-in-wishlist', query_string={'imdb_id': 'tt0112462'}) 
+
+        self.assertIn(result.data, b'{"movie_in_db":true,"movie_in_wishlist":false}\n')
+
+    def test_if_movie_not_in_DB_not_in_wishlist(self):
+        '''tests checking result when imdb_id in DB and not in current user's wishlist'''  ''  
+
+        result = self.client.get('/chek-imdbid-in-wishlist', query_string={'imdb_id': 'tt0142462'}) 
+
+        self.assertIn(result.data, b'{"movie_in_db":false,"movie_in_wishlist":false}\n')
+
+
+    # def test_add_movie_to_db(self):
+    #     '''test adding new movie to DB'''
+
+    #     result = self.client.get('/add-movie-to-db', query_string={'imdb_id': 'tt0099876',
+    #                                                                 'movie_title': 'New Title',
+    #                                                                 'imdb_rating': '8.5',
+    #                                                                 'released': '2018-June -04',
+    #                                                                 'plot': 'adding new plot',
+    #                                                                 'movie_url': 'http://testingURL',
+    #                                                                 'poster_img': 'http//testingimg',
+    #                                                                 'genre': ['test_genre3', 'test_genre1']})
+
+    #     self.assertEqual(result.data, b'OK')        
+
 
 
 class MyAppUnitTestCase(unittest.TestCase):

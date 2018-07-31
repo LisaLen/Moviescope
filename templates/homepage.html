@@ -7,18 +7,33 @@
 <li class="nav-item">
     <a class="nav-link" href='/wish-list'>Wish List</a>
 </li>
-<li class="nav-item">
+<!-- <li class="nav-item">
     <a class="nav-link" href='/recommendations'>Recom</a>
-</li>
+</li> -->
 
 {% endblock %}
 {% block content %}
-<p><h2>My Watched Movies List</h2></p>
+
+<p><h2>Recommendations</h2></p>
+<div class = 'container-fluid'>
+ <div class='row'>
+
+        {% for recom_movie in recom_movies %}
+        <div class='col-2'>
+            <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img src='{{recom_movie['Poster']}}'></a>
+        
+
+        </div>
+        {% endfor %}
+    </div>
+</div>
 
 <!-- <table class="table table-hover table-dark">
     <thead class="thead-lihjt"> -->
+<p><h2>My Movies</h2></p>
+<div class = 'container-fluid'>
 <div style="overflow-x:auto">
-<table>   
+<table cladd='table-wrapper-scroll-y'>   
     <thead id='th_journal'>     
         <th >Poster</th>
         <th >Movie Title</th>
@@ -42,7 +57,7 @@
         {% set movie = movie_review[0] %} 
         {% set review = movie_review[1] %}
         <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
-        <td width='150'><a href=' {{ movie.movie_url }}'>{{ movie.title}} </td>
+        <td width='150'><a href=' /movie-page?imdb_id={{movie.imdb_id}}'>{{ movie.title}} </td>
         <td>{{ movie.usa_release_date }}</td>
         <td>{{ movie.plot }}</td>
         
@@ -111,6 +126,7 @@
     {% endfor %}
     </tbody>    
 </table>
+</div>
 </div>
 
 <link href='static/css/homepage.css' rel='stylesheet'>

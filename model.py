@@ -142,12 +142,15 @@ def set_val_user_id():
         """Set value for the next user_id after seeding database"""
 
         # Get the Max user_id in the database
-        result = db.session.query(func.max(User.user_id)).one()
-        max_id = int(result[0])
+        # result = db.session.query(func.max(User.user_id)).one()
+        # max_id = int(result[0])
       
         # Set the value for the next user_id to be max_id + 1
         query = "SELECT setval('users_user_id_seq', :new_id)"
-        db.session.execute(query, {'new_id': max_id + 1})
+        # db.session.execute(query, {'new_id': max_id + 1})
+        db.session.execute(query, {'new_id': 671})
+
+
         db.session.commit()
 
 
@@ -158,8 +161,7 @@ def example_data():
    
     genre_test1 = Genre(genre_title='test_genre1')
     genre_test2 = Genre(genre_title='test_genre2')
-    genre_test3 = Genre(genre_title='test_genre3')
-    genre_test4 = Genre(genre_title='test_genre4')
+    
 
     movie1 = Movie( imdb_id = 'tt0112462', movie_url = 'https://www.warnerbros.com/batman-forever',
                     imdb_rating=5.4, 
@@ -183,14 +185,14 @@ def example_data():
                     title='Full Cycle',
                     plot='''TestPlot3''',
                     usa_release_date='1994-11-27',
-                    genres=[genre_test3, genre_test4])
+                    genres=[genre_test1, genre_test2])
 
     movie4 = Movie( imdb_id='tt0145678', movie_url='TestURL4',
                     imdb_rating=10, 
                     title='WorkingTitle',
                     plot='''TestPlot4''',
                     usa_release_date='1981-05-27',
-                    genres=[genre_test1, genre_test4])
+                    genres=[genre_test1, genre_test2])
 
     user1 = User(user_id=1, email='testemail1@gmail.com', password='123', fname='Test1', lname='Supertest1', wishlist=[movie3, movie4])
     user2 = User(user_id=2, email='testemail2@gmail.com', password='456', fname='Test2', lname='Supertest2')
@@ -215,7 +217,7 @@ def example_data():
 
     
     db.session.add_all([user1, user2, movie1, movie2, movie3, movie4])
-    db.session.add_all([review1, review2, review3, review4, genre_test1, genre_test2, genre_test3, genre_test4])
+    db.session.add_all([review1, review2, review3, review4, genre_test1, genre_test2])
     
     db.session.commit()
 

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %} Movie Journal {% endblock %}
+{% block navbar1 %}
+
+<li class="nav-item">
+    <a class="nav-link" href='/homepage'>My Journal</a>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link" href='/add-movie'>Add Movie</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href='/wish-list'>Wishlist</a>
+</li>
+
+{% endblock %}
+{% block content %}
+
+
+<div class='container'>
+    <div class='row'>
+        <div class='col-4'>
+            <img src='{{ movie['Poster'] }}'>
+        </div>
+        <div class='col'>
+            
+                <span><h1>{{ movie['Title'] }} ({{ movie['Year'] }})</h1>
+                    {% if movie_in_journal %}
+                        <h4> In your Journal
+                             {% for i in range (0, rating) %}
+                <span><i class="text-warning fas fa-star" style="font-size:7px"></i></span>
+            {% endfor %}
+                    {% endif %}
+
+                    {% if in_wishlist %}
+               In your Wishlist
+                {% endif %}
+
+
+                </span>
+                <span><h5>{{ movie['Runtime'] }}   {{ movie['Genre'] }}  {{ movie['Released'] }}</h5></span>
+                <span><h5>IMDB rating: {{movie['imdbRating']}}  imdbID: {{movie['imdbID']}}</h5></span>
+                <span><h5>Official WebSite: <a href='{{movie['Website']}}'>{{movie['Website']}}</a> </h5></span>
+                <span><h5> {{movie['Plot']}}</h5></span>
+                <span><h5> Director: {{movie['Director']}}</h5></span>
+                <span><h5> Actors: {{movie['Actors']}}</h5></span>
+                <span><h5> Awards: {{movie['Awards']}}</h5></span>
+
+        <div class='row'>
+            <div class='col'>
+                {% if not in_wishlist %}
+              <button type="button" class="btn btn-primary" id='withlist_btn_from_recom'
+                >Add To Wish List</button>
+                {% endif %}
+                
+            </div>
+        </div>
+        </div>
+    </div>
+</div>   
+
+
+<div class='container'>
+    <div class='row'>
+
+        {% for recom_movie in recom_movies %}
+        <div class='col-2'>
+            <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img src='{{recom_movie['Poster']}}'></a>
+        
+
+        </div>
+        {% endfor %}
+    </div>
+    
+</div>
+
+
+
+
+{% endblock %}
