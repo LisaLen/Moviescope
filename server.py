@@ -2,6 +2,8 @@ from jinja2 import StrictUndefined
 
 from flask import (Flask, request, render_template, redirect, flash, session,jsonify)
 
+from flask_login import LoginManager, login_required, login_user, logout_user
+
 from flask_debugtoolbar import DebugToolbarExtension
 
 #Passlib - for password encryption
@@ -23,7 +25,18 @@ import JustWatchAPI
 
 app = Flask(__name__)
 
+login_manager = LoginManager()
+
+login_manager.init_app(app)
+
 app.secret_key = 'ABC'
+
+
+@login_manager.user_loader
+def user_loader(user_id):
+    """Given *user_id*, return the associated User object."""
+
+    return User.query.get(user_id)
 
 @app.route('/')
 def open_singin_singup_page():
@@ -45,10 +58,8 @@ def check_password(hashed_password, user_password):
 
     return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
     
-   
-
-@app.route('/sign-in', methods=['POST'])
-def sin_in():
+@app.route("/login", methods=["GET", "POST"])
+def login():
     '''Action for login form; log a user in'''
   
     email = request.form.get('email')
@@ -60,11 +71,13 @@ def sin_in():
             
     if user:
         if check_password(user.password, password):
+            user.authenticated = True
             #fetchs user_id for loged-in user
-            user_id = User.query.filter_by(email=email).one().user_id
-            session['current_user'] = user_id
+            session['current_user'] = user.user_id
             fname = user.fname
             lname = user.lname
+            db.session.commit()
+            login_user(user, remember=True)
             flash (f'Logged in as {fname} {lname}' )
             return redirect('/homepage')
         else: 
@@ -75,9 +88,13 @@ def sin_in():
         return redirect('/')
 
 @app.route('/logout')
+@login_required
 def logout():
     '''User log-out'''
-    session.clear()
+    user = User.query.get(session['current_user'])
+    user.authenticated = False
+    db.session.commit()
+    logout_user()
     # user = User.query.filter_by(login=login).one()
     return redirect('/')
 
@@ -106,126 +123,120 @@ def register_new_user():
         return redirect('/')
         
 @app.route('/homepage')
+@login_required
 def open_homepage():
-    ''' Show homepage; show mivie list for a particular user'''
-    if 'current_user' in session: 
-                       
-        #returns [(<Movie>, <Review>)]
-        recommendations = RecombeeAPI.get_recommendations_for_user(session['current_user'])
+    ''' Show homepage; show mivie list for a particular user'''    
+             
+    #returns [(<Movie>, <Review>)]
+    recommendations = RecombeeAPI.get_recommendations_for_user(session['current_user'])
 
-        recom_movies = []
+    recom_movies = []
 
-        for recommendation in recommendations:
-            recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
-            recom_movie = requests.get(recom_url).json()
-            recom_movies.append(recom_movie)
+    for recommendation in recommendations:
+        recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
+        recom_movie = requests.get(recom_url).json()
+        recom_movies.append(recom_movie)
 
-        movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()
-        movies_reviews.reverse()  
-     
-        return render_template('homepage.html', movies_reviews=movies_reviews, recom_movies=recom_movies)
-    
-    else: 
-        return render_template('signin_signup.html')
+    movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()
+    movies_reviews.reverse()  
+ 
+    return render_template('homepage.html', movies_reviews=movies_reviews, recom_movies=recom_movies)
+       
 
 @app.route('/add-movie')
+@login_required
 def link_to_add_movie():
     ''' Show add_moview page'''
 
-    if 'current_user' in session: 
-        return render_template('add_movie.html')
-    else: 
-        return render_template('signin_signup.html')
-
+    return render_template('add_movie.html')
+    
 @app.route('/wish-list')
+@login_required
 def open_wish_list():
     ''' Show wish_list page'''
 
-    if 'current_user' in session: 
-        user = User.query.filter_by(user_id=session['current_user']).one()
-        wishlist = user.wishlist
-        wishlist.reverse()
+    user = User.query.filter_by(user_id=session['current_user']).one()
+    wishlist = user.wishlist
+    wishlist.reverse()
 
-        # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
-        # wishlist.reverse() 
+    # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
+    # wishlist.reverse() 
 
-        return render_template('wish_list.html', wishlist=wishlist)
+    return render_template('wish_list.html', wishlist=wishlist)
 
-        
-    else: 
-        return render_template('signin_signup.html')
-
+    
 @app.route('/movie-page')
+@login_required
 def open_movie_page():
     ''' Show movie page'''
 
-    if 'current_user' in session: 
-        user = User.query.filter_by(user_id=session['current_user']).one()
+   
+    user = User.query.filter_by(user_id=session['current_user']).one()
 
-        imdb_id = request.args.get('imdb_id')
+    imdb_id = request.args.get('imdb_id')
 
-        #create url for OMDB API request
-        url = 'http://www.omdbapi.com/?i=' + imdb_id + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
-        print(url)
+    #create url for OMDB API request
+    url = 'http://www.omdbapi.com/?i=' + imdb_id + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
+    print(url)
 
-        movie_info = requests.get(url).json()
-        print(movie_info)
+    movie_info = requests.get(url).json()
+    print(movie_info)
 
-        #fetching recommendations for pcurrent user
-        recommendations = RecombeeAPI.get_recommendations_for_user_item(imdb_id, user.user_id)
+    #fetching recommendations for pcurrent user
+    recommendations = RecombeeAPI.get_recommendations_for_user_item(imdb_id, user.user_id)
 
-        recom_movies = []
+    recom_movies = []
 
-        for recommendation in recommendations:
-            recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
-            recom_movie = requests.get(recom_url).json()
-            recom_movies.append(recom_movie)
+    for recommendation in recommendations:
+        recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
+        recom_movie = requests.get(recom_url).json()
+        recom_movies.append(recom_movie)
 
-        #check if we have movie in current user's journal    
-        review = db.session.query(Review).join(Movie).filter(Movie.imdb_id==imdb_id, Review.user_id==user.user_id).first()
+    #check if we have movie in current user's journal    
+    review = db.session.query(Review).join(Movie).filter(Movie.imdb_id==imdb_id, Review.user_id==user.user_id).first()
 
-        if review:
-            movie_in_journal = True
-            rating = review.rating
+    if review:
+        movie_in_journal = True
+        rating = review.rating
 
+    else:
+        movie_in_journal = False
+        rating = None
+
+
+    #check if imdb_id in current user's wishlist
+
+    movie = Movie.query.filter_by(imdb_id=imdb_id).first()
+    in_wishlist = False
+    print(movie)
+    if movie:
+        w = WishList.query.filter_by(user_id=user.user_id, movie_id=movie.movie_id).first()
+        if w:
+            in_wishlist = True
+            print(in_wishlist)
         else:
-            movie_in_journal = False
-            rating = None
+            in_wishlist = False
+            print(in_wishlist)
 
+    # movie = Movie.query.filter_by(imdb_id=imdb_id).one()
+    # user = User.query.filter_by(user_id=session['current_user']).one()
+    # wishlist = user.wishlist
+    # wishlist.reverse()
 
-        #check if imdb_id in current user's wishlist
+    # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
+    # wishlist.reverse() 
 
-        movie = Movie.query.filter_by(imdb_id=imdb_id).first()
-        print(movie)
-        if movie:
-            w = WishList.query.filter_by(user_id=user.user_id, movie_id=movie.movie_id).first()
-            if w:
-                in_wishlist = True
-                print(in_wishlist)
-            else:
-                in_wishlist = False
-                print(in_wishlist)
+    return render_template('movie_page.html', movie=movie_info, 
+                                              recom_movies=recom_movies, 
+                                              movie_in_journal=movie_in_journal,
+                                              rating=rating,
+                                              in_wishlist=in_wishlist)
+    # wishlist=wishlist)
 
-        # movie = Movie.query.filter_by(imdb_id=imdb_id).one()
-        # user = User.query.filter_by(user_id=session['current_user']).one()
-        # wishlist = user.wishlist
-        # wishlist.reverse()
-
-        # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
-        # wishlist.reverse() 
-
-        return render_template('movie_page.html', movie=movie_info, 
-                                                  recom_movies=recom_movies, 
-                                                  movie_in_journal=movie_in_journal,
-                                                  rating=rating,
-                                                  in_wishlist=in_wishlist)
-        # wishlist=wishlist)
-
-        
-    else: 
-        return render_template('signin_signup.html')
-
+    
+   
 @app.route('/watch-it')
+@login_required
 def show_watch_options():
     movie_title = request.args.get('movie_title')
     #taking relseas year only
