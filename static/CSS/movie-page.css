@@ -1,0 +1,22 @@
+
+h1{
+    text-decoration: bold;
+}
+
+#movie-info{
+    display:block;
+   background-color: rgb(220,220,220, 0.85);
+
+}
+
+#poster-img{
+    width: 250px;
+    height:370px;
+
+}
+
+#recom_img{
+    width: 170px;
+    height:250px;
+
+}
