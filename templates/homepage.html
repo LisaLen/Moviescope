@@ -12,17 +12,15 @@
 </li> -->
 
 {% endblock %}
-{% block content %}
 
-<p><h2>Recommendations</h2></p>
-<div class = 'container-fluid'>
+{% block content %}
+<div class = 'container'>
+    <p><h2>You May Like It</h2></p>
  <div class='row'>
 
         {% for recom_movie in recom_movies %}
         <div class='col-2'>
-            <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img src='{{recom_movie['Poster']}}'></a>
-        
-
+            <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img id = 'recom_img' src='{{recom_movie['Poster']}}'></a>
         </div>
         {% endfor %}
     </div>
@@ -31,24 +29,27 @@
 <!-- <table class="table table-hover table-dark">
     <thead class="thead-lihjt"> -->
 <p><h2>My Movies</h2></p>
-<div class = 'container-fluid'>
-<div style="overflow-x:auto">
-<table cladd='table-wrapper-scroll-y'>   
-    <thead id='th_journal'>     
-        <th >Poster</th>
-        <th >Movie Title</th>
-        <th >Release Date</th>
-        <th width='300'>Plot</th>
-        <th >Genre</th>
-        <th >IMDb Rating</th>
-        <th width='70'>My Rating</th>
-        <th >My Review</th>
-        <th >Review Date</th>
-        <th></th>
-        <th></th>
+ <div class = 'container-fluid' >
+<div class="table-wrapper-scroll-y" id='table'>
+    
+<table class='table table-hover' id='journal'>   
+    <thead class="thead-dark" id='th_journal'>  
+        <tr>   
+            <th >Poster</th>
+            <th >Movie Title</th>
+            <th >Release Date</th>
+            <th width='300'>Plot</th>
+            <th >Genre</th>
+            <th >IMDb Rating</th>
+            <th  width='70'>My Rating</th>
+            <th >My Review</th>
+            <th >Review Date</th>
+            <th ></th>
+            <th > </th>
+        </tr>
     </thead>
 
-    <tbody id='tb_journal'>
+    <tbody  id='tb_journal'>
 
     {% for movie_review in movies_reviews %}
     <tr id='tr_journal'>
@@ -78,12 +79,14 @@
 
 
            </td>
-        <td  class='review' width='350'>{{review.review }}</td>
+        <td  class='review' width='250'>{{review.review }}</td>
         <td class='date_review'>{{review.date_review }}</td>
 
         <!-- Trigger/Open The Modal -->
-        <td><button  type='button' class='btn' data-toggle='modal' data-target='#modal-edit{{movie.movie_id}}' value='{{ movie.movie_id }}' >Edit Review </button>
-        
+        <td><label type="button" class='btn' data-toggle='modal' data-target='#modal-edit{{movie.movie_id}}' value='{{ movie.movie_id }}'>
+                <span class="icon-plus"></span> Edit Review
+            </label>
+           
         <!-- EDIT REVIEW POPUP WINDOW-->
 
         <!-- The Modal -->
@@ -118,7 +121,7 @@
 
         <!-- END POPUP MODEL -->
          </td> 
-        <td><button  id='deleteMovie' class='btn' value='{{ movie.movie_id }}'>Delete </button></td>
+        <td><label  type='button' id='deleteMovie' class='btn' value='{{ movie.movie_id }}'>Delete </label></td>
 
         {% endwith %}
     </tr>
@@ -128,13 +131,22 @@
 </table>
 </div>
 </div>
+</div>
 
 <link href='static/css/homepage.css' rel='stylesheet'>
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
 
 <script src='http://code.jquery.com/jquery.js'></script>
 <script src ='/static/JS/edit_review.js'></script>
 
 <script src ='/static/JS/delete_from_journal.js'></script>
+<script src ='static/JS/homepage.js'></script>
+
+
+ 
+<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
+
+
 
 
 

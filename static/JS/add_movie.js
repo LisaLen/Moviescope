@@ -99,7 +99,7 @@ function checkMovieInJournal(evt){
 
     let imdb_id_val  = tr.context.value
 
-    $.get('/check-imdbid-indb', {imdb_id: imdb_id_val}, function(results){
+    $.get('/check-imdbid-in_journal', {imdb_id: imdb_id_val}, function(results){
         if(results==='True'){
             // console.log(results);
             alert('This movie is already in your journal. To edit review, use \'Edit\' on Journal page');

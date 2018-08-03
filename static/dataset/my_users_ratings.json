@@ -1,9 +1,9 @@
-
-
-
-
+[{"userid": "672", "imdbid": "0113497", "rating": "5"},
+{"userid": "672", "imdbid": "0114319", "rating": "3"},
+{"userid": "672", "imdbid": "0114388", "rating": "4"},
+{"userid": "672", "imdbid": "0061852", "rating": "3"},
 {"userid": "672", "imdbid": "0046183", "rating": "3"},
-{"userid": "672", "imdbid": "0078087", "rating": "0.5"},
+{"userid": "672", "imdbid": "0133093", "rating": "5"},
 {"userid": "672", "imdbid": "0351283", "rating": "5"},
 {"userid": "672", "imdbid": "0120755", "rating": "4"},
 {"userid": "672", "imdbid": "0356910", "rating": "5"},
@@ -15,11 +15,7 @@
 {"userid": "672", "imdbid": "0266697", "rating": "5"},
 {"userid": "672", "imdbid": "0314331", "rating": "5"},
 {"userid": "672", "imdbid": "2488496", "rating": "0.5"},
-
-
-
-
-
+{"userid": "672", "imdbid": "0078087", "rating": "0.5"}
 {"userid": "673", "imdbid": "0114709", "rating": "5"},
 {"userid": "673", "imdbid": "0099785", "rating": "5"},
 {"userid": "673", "imdbid": "0104431", "rating": "5"},

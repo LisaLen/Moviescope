@@ -1,83 +1,50 @@
 from jinja2 import StrictUndefined
-
 from flask import (Flask, request, render_template, redirect, flash, session,jsonify)
-
-from flask_login import LoginManager, login_required, login_user, logout_user
-
 from flask_debugtoolbar import DebugToolbarExtension
-
-#Passlib - for password encryption
-import uuid
-import hashlib
-
+# import uuid
+# import hashlib
 from model import connect_to_db, db, User, Movie, Review, Genre, MovieGenre, WishList
-
 import RecombeeAPI
-
 import datetime
 
-import requests
+#import requests
 
-import os # to access OS environment variables
+#mport os # to access OS environment variables
 
 import JustWatchAPI
-
+import OMDB_API
+from units import hash_password, check_password, create_new_movie, create_new_review
 
 app = Flask(__name__)
-
-login_manager = LoginManager()
-
-login_manager.init_app(app)
-
 app.secret_key = 'ABC'
 
-
-@login_manager.user_loader
-def user_loader(user_id):
-    """Given *user_id*, return the associated User object."""
-
-    return User.query.get(user_id)
 
 @app.route('/')
 def open_singin_singup_page():
     '''Show SignIn/SignUp page'''
 
-    if not session.get('current_user'): 
-        return render_template('signin_signup.html')
-    else:
-        return redirect('/homepage')
-
-def hash_password(password):
-    # uuid is used to generate a random number
-    salt = uuid.uuid4().hex
-    return hashlib.sha256(salt.encode() + password.encode()).hexdigest() + ':' + salt
+    if session.get('current_user'):
+        return redirect('homepage')
+        
+    return render_template('signin_signup.html')
     
-def check_password(hashed_password, user_password):
-    password, salt = hashed_password.split(':')
 
-
-    return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
-    
 @app.route("/login", methods=["GET", "POST"])
 def login():
     '''Action for login form; log a user in'''
-  
+
     email = request.form.get('email')
     password = request.form.get('password')
-   
+
     #query to get user object using email
     user = User.query.filter_by(email=email).first()
-    print(user.password)
-            
+                
     if user:
         if check_password(user.password, password):
-            user.authenticated = True
-            #fetchs user_id for loged-in user
+            #stor user_id in session
             session['current_user'] = user.user_id
-            fname = user.fname
-            lname = user.lname
-            db.session.commit()
-            login_user(user, remember=True)
+            fname, lname = user.fname, user.lname  
+
             flash (f'Logged in as {fname} {lname}' )
             return redirect('/homepage')
         else: 
@@ -88,22 +55,23 @@ def login():
         return redirect('/')
 
 @app.route('/logout')
-@login_required
 def logout():
     '''User log-out'''
-    user = User.query.get(session['current_user'])
-    user.authenticated = False
-    db.session.commit()
-    logout_user()
-    # user = User.query.filter_by(login=login).one()
-    return redirect('/')
+    session.clear()
+    return render_template('signin_signup.html')
 
+@app.route('/email-check', methods=['POST'] )
+def check_email_in_db():
+    '''check if user with given email exists in DB'''
 
-
+    email = request.form.get('email')
+    if User.query.filter_by(email=email).first():
+        return 'email exists'
+    return 'OK'
 
 @app.route('/sign-up', methods=['POST'])
 def register_new_user():
-
+    '''create new user'''
    
     email = request.form.get('email')
     user = User.query.filter_by(email=email).first()
@@ -112,9 +80,12 @@ def register_new_user():
         fname = request.form.get('fname')
         lname = request.form.get('lname')
         new_user = User(email=email, password=password, 
-                    fname=fname, lname=lname, )
+                        fname=fname, lname=lname, )
         db.session.add(new_user)
         db.session.commit()
+
+        #add new user to DB at RecombeeAPI 
+        add_new_user_to_recombee(user_id)
     
         flash('New user has been added. Please sign-in to continue')
         return redirect('/')
@@ -123,208 +94,129 @@ def register_new_user():
         return redirect('/')
         
 @app.route('/homepage')
-@login_required
 def open_homepage():
-    ''' Show homepage; show mivie list for a particular user'''    
-             
-    #returns [(<Movie>, <Review>)]
+    ''' Show homepage; show mivie list for a particular user''' 
+
+    if not session.get('current_user'): 
+        return redirect('/')  
+      
+
+    print(session['current_user'])       
     recommendations = RecombeeAPI.get_recommendations_for_user(session['current_user'])
+    print(recommendations)
 
     recom_movies = []
 
     for recommendation in recommendations:
-        recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
-        recom_movie = requests.get(recom_url).json()
+        recom_movie = OMDB_API.api_request(recommendation)
         recom_movies.append(recom_movie)
 
-    movies_reviews = db.session.query(Movie, Review).join(Review).filter_by(user_id=session['current_user']).all()
-    movies_reviews.reverse()  
+    print(recom_movies)
+
+    # returns [(<Movie>, <Review>)]
+    movies_reviews = db.session.query(Movie, Review).join(Review)\
+                                    .options(db.subqueryload(Movie.genres))\
+                                    .filter_by(user_id=session['current_user']).all()
+    movies_reviews.reverse()
  
-    return render_template('homepage.html', movies_reviews=movies_reviews, recom_movies=recom_movies)
+    return render_template('homepage.html', movies_reviews=movies_reviews,
+                                            recom_movies=recom_movies)
        
 
 @app.route('/add-movie')
-@login_required
 def link_to_add_movie():
     ''' Show add_moview page'''
+
+    if not session.get('current_user'): 
+        return redirect('/')  
 
     return render_template('add_movie.html')
     
 @app.route('/wish-list')
-@login_required
 def open_wish_list():
     ''' Show wish_list page'''
+
+    if not session.get('current_user'): 
+        return redirect('/')  
 
     user = User.query.filter_by(user_id=session['current_user']).one()
     wishlist = user.wishlist
     wishlist.reverse()
 
-    # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
-    # wishlist.reverse() 
-
     return render_template('wish_list.html', wishlist=wishlist)
 
     
 @app.route('/movie-page')
-@login_required
 def open_movie_page():
     ''' Show movie page'''
 
-   
-    user = User.query.filter_by(user_id=session['current_user']).one()
+    if not session.get('current_user'): 
+        return redirect('/')  
 
+    user = User.query.filter_by(user_id=session['current_user']).one()
     imdb_id = request.args.get('imdb_id')
 
-    #create url for OMDB API request
-    url = 'http://www.omdbapi.com/?i=' + imdb_id + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
-    print(url)
-
-    movie_info = requests.get(url).json()
-    print(movie_info)
-
-    #fetching recommendations for pcurrent user
+    #get movie information from OMDB APi
+    movie_info = OMDB_API.api_request(imdb_id)
+  
+    #fetching recommendations for current user
     recommendations = RecombeeAPI.get_recommendations_for_user_item(imdb_id, user.user_id)
 
+    #to stor movie information for recommended movies ( stored in json)
     recom_movies = []
 
     for recommendation in recommendations:
-        recom_url = 'http://www.omdbapi.com/?i=' + recommendation + '&apikey=' + os.environ['OMDB_API_KEY'] + '&plot=full'
-        recom_movie = requests.get(recom_url).json()
+        recom_movie = OMDB_API.api_request(recommendation)
         recom_movies.append(recom_movie)
-
-    #check if we have movie in current user's journal    
-    review = db.session.query(Review).join(Movie).filter(Movie.imdb_id==imdb_id, Review.user_id==user.user_id).first()
-
-    if review:
-        movie_in_journal = True
-        rating = review.rating
-
-    else:
-        movie_in_journal = False
-        rating = None
-
-
-    #check if imdb_id in current user's wishlist
-
+    
     movie = Movie.query.filter_by(imdb_id=imdb_id).first()
-    in_wishlist = False
-    print(movie)
+
+    rating, in_wishlist  = None, False
+    
     if movie:
-        w = WishList.query.filter_by(user_id=user.user_id, movie_id=movie.movie_id).first()
-        if w:
-            in_wishlist = True
-            print(in_wishlist)
-        else:
-            in_wishlist = False
-            print(in_wishlist)
+        #check if imdb_id in current user's wishlist
+        in_wishlist = (movie in user.wishlist)
 
-    # movie = Movie.query.filter_by(imdb_id=imdb_id).one()
-    # user = User.query.filter_by(user_id=session['current_user']).one()
-    # wishlist = user.wishlist
-    # wishlist.reverse()
-
-    # wishlist = db.session.query(Movie).join(User).filter_by(user_id=session['current_user']).all()
-    # wishlist.reverse() 
-
+        #check if we have movie in current user's journal  
+        review = Review.query.filter_by(movie_id=movie.movie_id, 
+                                        user_id=session['current_user']).first()
+        if review:
+            rating = review.rating
+        
     return render_template('movie_page.html', movie=movie_info, 
-                                              recom_movies=recom_movies, 
-                                              movie_in_journal=movie_in_journal,
+                                              recom_movies=recom_movies,                                             
                                               rating=rating,
                                               in_wishlist=in_wishlist)
-    # wishlist=wishlist)
 
-    
-   
 @app.route('/watch-it')
-@login_required
 def show_watch_options():
+    '''show watch_it page'''
+
+    if not session.get('current_user'): 
+        return redirect('/')  
+
     movie_title = request.args.get('movie_title')
+    
     #taking relseas year only
     release_year = int(request.args.get('released')[:4])
     poster_img = request.args.get('poster_img')
 
-    print(movie_title, release_year)
     where_watch = JustWatchAPI.to_watch(movie_title, release_year)
-    print(where_watch)
-   
+       
     return render_template('watch_it.html', poster_img=poster_img,
                                             where_watch=where_watch)
 
-def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date, poster_img, genres):
-    '''Create new movie row in DB, returns Movie object
-    genres =[Genre1, Genre2...]'''
 
-    
-    #creating list of Genres objects and also adding new genres to DB
-
-    #fetching existing genres in DB
-    genres_tpl = db.session.execute('SELECT genre_title FROM genres').fetchall()
-
-    genres_inst = []
-    #will stor new genres in list to add to DB with one commit
-    new_genres_lst =[]
-    
-    for genre in genres:
-        if (genre, ) not in genres_tpl: 
-
-            #add new genre into Genres table
-            new_genre = Genre(genre_title=genre)
-            
-            new_genres_lst.append(new_genre)
-            
-        else:
-            #fetching genre object for genre existing in DB
-            new_genre = Genre.query.filter_by(genre_title=genre).one()
-            
-            
-
-        genres_inst.append(new_genre)
-
-
-    if new_genres_lst != []:
-        db.session.add_all(new_genres_lst)
-    
-
-    new_movie = Movie(imdb_id=imdb_id, 
-                      movie_url=movie_url,
-                      imdb_rating=imdb_rating,
-                      title=title,
-                      plot=plot,
-                      usa_release_date=release_date,
-                      poster_img=poster_img,
-                      genres=genres_inst)
-
-    
-    db.session.add(new_movie) 
-    db.session.commit()
-
-    return new_movie
-
-def create_new_review(movie_id, user_id, review, rating, date_review):
-    '''Creates new review row in DB, returns Review object'''
-    
-    new_review = Review(movie_id=movie_id,
-                        user_id=user_id,
-                        review=review,
-                        rating=rating,
-                        date_review=date_review)
-
-    
-    db.session.add(new_review)
-    db.session.commit()
-
-    return new_review
-
-
-@app.route('/check-imdbid-indb')
+@app.route('/check-imdbid-in_journal')
 def chek_if_movie_in_journal():
     '''Checks if selected movie in current_user's journal. 
     Returns True if movie is in current_user's journal '''
 
     imdb_id = request.args.get('imdb_id')
 
-
-    if db.session.query(Movie).join(Review).filter(Review.user_id==session.get('current_user'), Movie.imdb_id==imdb_id).first():
+    if db.session.query(Movie).join(Review)\
+                              .filter(Review.user_id==session.get('current_user'), \
+                               Movie.imdb_id==imdb_id).first():
         return 'True' 
     return 'False'   
 
@@ -345,14 +237,12 @@ def check_if_movie_in_wishlist():
         if new_movie in current_user.wishlist:
             results['movie_in_wishlist'] = True
 
-           
     return jsonify(results)
 
 
 @app.route('/add-movie-to-db')
 def add_movie_to_database():
     '''add new moview to DB'''
-
    
     imdb_id = request.args.get('imdb_id')
     movie_title = request.args.get('movie_title')
@@ -374,8 +264,7 @@ def add_movie_to_database():
     except:
         return 'ERROR'
 
-   
- 
+
 @app.route('/add-to-wishlist')
 def add_movie_to_user_wishlist():
     '''add movie to current user's wish list'''
@@ -388,7 +277,6 @@ def add_movie_to_user_wishlist():
     
     try:
         current_user.wishlist.append(movie)
-        
         db.session.add(current_user)
         db.session.commit()
         return 'OK'
@@ -396,24 +284,19 @@ def add_movie_to_user_wishlist():
     except:
         return 'ERROR'     
 
-
-
-
 @app.route('/add-movie-to-journal')
 def add_new_movie():
     '''Add new movie, rating and review into journal'''
 
-    #get all imdb_ids from DB, it returns [(imdb_id, ).....]
     imdb_id = request.args.get('imdbid')
-
+    new_movie=Movie.query.filter_by(imdb_id=imdb_id).first()
         
-    if not Movie.query.filter_by(imdb_id=imdb_id).first():
+    if not new_movie:
         #if given imdb_id doesn't exist in DB, then create new_movie in DB
         movie_title = request.args.get('title')
         genres = request.args.get('genre').split(', ') #string with several genres; converting string to list
         imdb_rating = request.args.get('imdb_rating')
         release_date = request.args.get('released')
-        
         plot = request.args.get('plot')
         movie_url = request.args.get('movie_url')
         poster_img = request.args.get('poster_img')
@@ -421,11 +304,6 @@ def add_new_movie():
         new_movie = create_new_movie(imdb_id, movie_url, imdb_rating,
                           movie_title, plot, release_date, poster_img, genres)
 
-    else:
-        new_movie=Movie.query.filter_by(imdb_id=imdb_id).one()
-        
-
-    
     rating = int(request.args.get('rating'))
     review = request.args.get('review')
 
@@ -433,9 +311,9 @@ def add_new_movie():
     date_review = datetime.date.today().strftime("%Y-%m-%d")
 
     new_review = create_new_review(new_movie.movie_id, session.get('current_user'), review, rating, date_review)
+    RecombeeAPI.send_new_rating_to_API(session.get('current_user'), imdb_id, rating)
 
-    # create_movie_genres_connection(new_movie.movie_id, genres)
-     
+
     flash ('movie was added')
 
     return redirect('/homepage')
@@ -470,7 +348,6 @@ def edit_rating_and_review():
     review.review = new_review
     review.date_review = date_review
    
-
     try:
         db.session.commit()
         return jsonify({'date_review': date_review})

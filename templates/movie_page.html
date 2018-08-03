@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block title %} Movie Journal {% endblock %}
+<link rel="stylesheet" type="text/css" href="movie-page.css">
 {% block navbar1 %}
 
 <li class="nav-item">
@@ -14,38 +15,53 @@
 </li>
 
 {% endblock %}
+
 {% block content %}
 
 
 <div class='container'>
     <div class='row'>
         <div class='col-4'>
-            <img src='{{ movie['Poster'] }}'>
-        </div>
-        <div class='col'>
-            
-                <span><h1>{{ movie['Title'] }} ({{ movie['Year'] }})</h1>
-                    {% if movie_in_journal %}
-                        <h4> In your Journal
-                             {% for i in range (0, rating) %}
-                <span><i class="text-warning fas fa-star" style="font-size:7px"></i></span>
+            <img id='poster-img' src='{{ movie['Poster'] }}'><br>
+            {% if rating %}
+            <ul class="list-inline">
+                <li><em> In your Journal</em></li>
+                <li>{% for i in range (0, rating) %}
+                <i class="text-warning fas fa-star" style="font-size:20px"></i></li>
             {% endfor %}
-                    {% endif %}
+            </ul>
+            {% endif %}
+        </div>
 
-                    {% if in_wishlist %}
-               In your Wishlist
-                {% endif %}
-
-
-                </span>
-                <span><h5>{{ movie['Runtime'] }}   {{ movie['Genre'] }}  {{ movie['Released'] }}</h5></span>
-                <span><h5>IMDB rating: {{movie['imdbRating']}}  imdbID: {{movie['imdbID']}}</h5></span>
-                <span><h5>Official WebSite: <a href='{{movie['Website']}}'>{{movie['Website']}}</a> </h5></span>
-                <span><h5> {{movie['Plot']}}</h5></span>
-                <span><h5> Director: {{movie['Director']}}</h5></span>
-                <span><h5> Actors: {{movie['Actors']}}</h5></span>
-                <span><h5> Awards: {{movie['Awards']}}</h5></span>
-
+        <div class='col-8' id='movie-info'>
+            <ul class="list-inline">
+                <li><h1>{{ movie['Title'] }}</h1></li>
+                <li><h3>({{ movie['Year'] }})</h3></li>
+                <li><strong>{{ movie['Runtime'] }}</strong></li>                
+            </ul>
+            <ul class="list-inline">
+               <li><em>  {{ movie['Genre'] }}</em></li>
+               <li><em>Released:</em> <strong>{{ movie['Released'] }}</strong></li>
+               <li><em>IMDB rating: </em> <strong>{{movie['imdbRating']}} </strong></li>
+               <li><em>imdbID:</em><strong> {{movie['imdbID']}}</strong></li>
+            </ul>
+            <ul class="list-inline">
+               <li><em> Official WebSite:</em></li>
+               <li><strong> <a href='{{movie['Website']}}'>{{movie['Website']}}</strong></a></li>
+            </ul>
+            <p><strong>{{movie['Plot']}}</strong></p>
+             <ul class="list-inline">
+                <li><em>Director: </em></li>
+                <li><strong>{{movie['Director']}}</strong></li>
+            </ul>
+            <ul class="list-inline">
+                <li><em>Actors:</em> </li>
+                <li><strong>{{movie['Actors']}}</strong></li>
+            </ul>
+            <ul class="list-inline">
+                <li><em> Awards:</em></li>
+                <li><strong> {{movie['Awards']}}</strong></li>
+            </ul>
         <div class='row'>
             <div class='col'>
                 {% if not in_wishlist %}
@@ -60,21 +76,21 @@
 </div>   
 
 
-<div class='container'>
+<div class='container'> 
     <div class='row'>
-
+        <h2><strong>You May Like it</strong></h2>
+    </div>
+    <div class='row'>
         {% for recom_movie in recom_movies %}
         <div class='col-2'>
-            <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img src='{{recom_movie['Poster']}}'></a>
-        
-
+            <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img id = 'recom_img' src='{{recom_movie['Poster']}}'></a>
         </div>
         {% endfor %}
-    </div>
-    
+    </div>    
 </div>
 
-
+<link rel="stylesheet" type="text/css" href="static/css/movie-page.css">
 
 
 {% endblock %}
+
