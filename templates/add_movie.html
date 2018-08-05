@@ -13,61 +13,45 @@
  <form class="form-inline my-2 my-lg-0">
       <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id='movietitleIMDb'>
       <button class="btn btn-outline-success my-2 my-sm-0" class='movietitle' id='imdbsearch' type="submit">Search IMDb</button>
-    </form>
-
+  </form>
 {% endblock %}
 {% block content %}
 <div class="container-fluid">
 <div class='row'>
-  
   <div class='col-5'>
     <form action='/add-movie-to-journal'>
-    
     <div class="form-group">
       <label for="movietitle">Movie Titile:</label>
       <input type='text' class="form-control" id='movietitle' name='title' required>  
     </div>
-      
     <div class="form-group">
-
       <label for="imdbid">IMDb_ID:</label> <input class="form-group" type='text' id='imdbid' name='imdbid' style='width:70px' required readonly>
       <label for="imdb_rating">IMDB rating:</label> <input class="form-group" type='text' id='imdb_rating' name='imdb_rating' style='width:50px' required readonly>
       <label for="released">Release date:</label><input class="form-group" type='text' id='released' style='width:100px' name='released' required readonly>
     </div>
-   
     <div class="form-group">
         <label for="genre">Genre:</label>
         <input type='text' id='genre' class="form-control" name='genre' required>
-      </div> 
-
-      <div class="form-group">
+    </div> 
+    <div class="form-group">
         <label for="plot">Plot:</label>
         <textarea id='plot' class="form-control"  style='height:80px' name='plot'></textarea>
     </div>
-
      <input type='hidden' id='movie_url' name='movie_url'>
      <input type='hidden' id='poster_img' name='poster_img'>
-
-     <button type="submit" class="btn btn-primary" id='withlist_btn'>Add To Wish List</button>
-
-    
+     <button type="submit" class="btn btn-primary" id='wishlist-btn'>Add To Wish List</button>
     <div>
       <input type='number' id='rating' name='rating' class="rating rating-loading" data-min="1" data-max="5" data-step="1" value="0" required><br>
     </div>
-
     <div class="form-group">
       <label for="review"> Write Your Review:</label>
       <textarea class="form-control" id='review' name='review' style='height:120px' quired></textarea>
     </div>
-       
-        <button type="submit" class="btn btn-primary" id='add-movie-btn'>Add Movie</button>
-
+      <button type="submit" class="btn btn-primary" id='add-movie-btn'>Add Movie</button>
   </div>
-
   <div class='col-7'>
     <script src='http://code.jquery.com/jquery.js'></script>
     <script src ='static/JS/add_movie.js'></script>
-    
   <table class="table table-dark">
   <thead>
     <tr>
@@ -78,16 +62,11 @@
     </tr>
   </thead>
       <tbody id='movie_search'>
-
       </tbody>
-        
-    </table>
+  </table>
     <link <link href='static/css/add_movie.css' rel='stylesheet'>
   </div>
 </div>
-
- 
-
 {% endblock %}
 
 

@@ -17,7 +17,7 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
     '''Create new movie row in DB, returns Movie object
        genres =[Genre1, Genre2...]'''
 
-    #create instance of newmovie
+    #create instance of new movie
     new_movie = Movie(imdb_id=imdb_id, 
                       movie_url=movie_url,
                       imdb_rating=imdb_rating,
@@ -35,16 +35,14 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
         if (genre, ) not in genres_tpl: 
             #create new genre object
             new_genre = Genre(genre_title=genre)
-                        
+
         else:
             #fetching genre object for genre existing in DB
             new_genre = Genre.query.filter_by(genre_title=genre).one()
 
         new_movie.genres.append(new_genre)
-           
-    db.session.add(new_movie) 
+    db.session.add(new_movie)
     db.session.commit()
-
     return new_movie
 
 def create_new_review(movie_id, user_id, review, rating, date_review):
@@ -55,9 +53,6 @@ def create_new_review(movie_id, user_id, review, rating, date_review):
                         review=review,
                         rating=rating,
                         date_review=date_review)
-
-    
     db.session.add(new_review)
     db.session.commit()
-
     return new_review

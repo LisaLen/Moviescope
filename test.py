@@ -1,5 +1,4 @@
 # tests to test server.py
-
 import unittest
 from server import app
 from model import connect_to_db, db, example_data
@@ -49,10 +48,6 @@ class SignInTestCase(unittest.TestCase):
         result = self.client.get('/wish-list',  follow_redirects=True)
         self.assertIn(b'<h1>Registration</h1>', result.data)
         self.assertIn(b'class="navbar-toggler', result.data)
-
-
-
-    
 
 class JournalTestsDatabase(unittest.TestCase):
 

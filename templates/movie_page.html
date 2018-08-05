@@ -2,27 +2,22 @@
 {% block title %} Movie Journal {% endblock %}
 <link rel="stylesheet" type="text/css" href="movie-page.css">
 {% block navbar1 %}
-
 <li class="nav-item">
     <a class="nav-link" href='/homepage'>My Journal</a>
 </li>
-
 <li class="nav-item">
     <a class="nav-link" href='/add-movie'>Add Movie</a>
 </li>
 <li class="nav-item">
     <a class="nav-link" href='/wish-list'>Wishlist</a>
 </li>
-
 {% endblock %}
 
 {% block content %}
-
-
 <div class='container'>
     <div class='row'>
         <div class='col-4'>
-            <img id='poster-img' src='{{ movie['Poster'] }}'><br>
+            <img id='poster_img' src='{{ movie['Poster'] }}'><br>
             {% if rating %}
             <ul class="list-inline">
                 <li><em> In your Journal</em></li>
@@ -32,24 +27,23 @@
             </ul>
             {% endif %}
         </div>
-
         <div class='col-8' id='movie-info'>
             <ul class="list-inline">
-                <li><h1>{{ movie['Title'] }}</h1></li>
+                <li id='movietitle'><h1>{{ movie['Title'] }}</h1></li>
                 <li><h3>({{ movie['Year'] }})</h3></li>
                 <li><strong>{{ movie['Runtime'] }}</strong></li>                
             </ul>
             <ul class="list-inline">
-               <li><em>  {{ movie['Genre'] }}</em></li>
-               <li><em>Released:</em> <strong>{{ movie['Released'] }}</strong></li>
-               <li><em>IMDB rating: </em> <strong>{{movie['imdbRating']}} </strong></li>
+               <li id='genre'><em>  {{ movie['Genre'] }}</em></li>
+               <li id='released'><em>Released:</em> <strong>{{ movie['Released'] }}</strong></li>
+               <li><em>IMDB rating: </em> <strong id='imdb_rating'>{{movie['imdbRating']}} </strong></li>
                <li><em>imdbID:</em><strong> {{movie['imdbID']}}</strong></li>
             </ul>
             <ul class="list-inline">
                <li><em> Official WebSite:</em></li>
-               <li><strong> <a href='{{movie['Website']}}'>{{movie['Website']}}</strong></a></li>
+               <li id='movie_url'><strong> <a href='{{movie['Website']}}'>{{movie['Website']}}</strong></a></li>
             </ul>
-            <p><strong>{{movie['Plot']}}</strong></p>
+            <p id='plot'><strong>{{movie['Plot']}}</strong></p>
              <ul class="list-inline">
                 <li><em>Director: </em></li>
                 <li><strong>{{movie['Director']}}</strong></li>
@@ -65,17 +59,15 @@
         <div class='row'>
             <div class='col'>
                 {% if not in_wishlist %}
-              <button type="button" class="btn btn-primary" id='withlist_btn_from_recom'
-                >Add To Wish List</button>
+              <button type="button" class="btn btn-primary" id='moviep_withlist_btn'
+               >Add To Wish List</button>
+                <input type='hidden' id='imdbid' value='{{movie['imdbID']}}'>
                 {% endif %}
-                
             </div>
         </div>
         </div>
     </div>
 </div>   
-
-
 <div class='container'> 
     <div class='row'>
         <h2><strong>You May Like it</strong></h2>
@@ -90,7 +82,7 @@
 </div>
 
 <link rel="stylesheet" type="text/css" href="static/css/movie-page.css">
-
+<script src='http://code.jquery.com/jquery.js'></script>
+<script src ='static/JS/movie_page.js'></script>
 
 {% endblock %}
-

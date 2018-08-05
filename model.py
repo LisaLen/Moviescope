@@ -1,4 +1,4 @@
-# Models and database functions for Movie Journal project
+# Models and database functions for Moviescope project
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
@@ -8,7 +8,7 @@ db = SQLAlchemy()
 #Models
 
 class User(db.Model):
-    '''Users of Movie-Journal app'''
+    '''Users of Moviescope app'''
 
     __tablename__ = 'users'
 
@@ -35,7 +35,7 @@ class User(db.Model):
                 f'lname = {self.lname}>')
 
 class Movie(db.Model):
-    '''Movies saved in Movie-Journal app'''
+    '''Movies saved in Moviescope app'''
 
     __tablename__ = 'movies'
 
@@ -52,7 +52,7 @@ class Movie(db.Model):
                              secondary='movies_genres',
                              backref='movies')
 
-    #movie.users - shows list of users which wishlists contain particular movie
+    #movie.users - shows list of users which wishlists contain this movie
 
     def __repr__(self):
         '''Provides helpful representation when printed'''
@@ -136,31 +136,28 @@ class WishList(db.Model):
     movie_id = db.Column(db.Integer, 
                          db.ForeignKey('movies.movie_id'), nullable=False)
 
-
-
+    def __repr__(self):
+        return (f'<wishlist_id = self.wishlist_id>'
+                f'<user_id = self.user_id>'
+                f'<movie_id = self.movie_id>')
 
 
 def set_val_user_id():
-        """Set value for the next user_id after seeding database"""
+        """Set value for the next user_id after seeding database - for testing purposes"""
 
         # Get the Max user_id in the database
-        # result = db.session.query(func.max(User.user_id)).one()
-        # max_id = int(result[0])
+        result = db.session.query(func.max(User.user_id)).one()
+        max_id = int(result[0])
       
         # Set the value for the next user_id to be max_id + 1
         query = "SELECT setval('users_user_id_seq', :new_id)"
-        # db.session.execute(query, {'new_id': max_id + 1})
-        db.session.execute(query, {'new_id': 671})
-
-
+        db.session.execute(query, {'new_id': max_id + 1})
         db.session.commit()
 
 
 def example_data():
     """Create example data for the test database."""
 
-
-   
     genre_test1 = Genre(genre_title='test_genre1')
     genre_test2 = Genre(genre_title='test_genre2')
     
@@ -220,13 +217,9 @@ def example_data():
     
     db.session.add_all([user1, user2, movie1, movie2, movie3, movie4])
     db.session.add_all([review1, review2, review3, review4, genre_test1, genre_test2])
-    
     db.session.commit()
 
-
     set_val_user_id()
-
-
 
 
 
@@ -247,6 +240,12 @@ if __name__== '__main__':
     from server import app
     connect_to_db(app)
     print('Connected to DB')
+
+    # db.create_all()
+#to stay inline with user IDs of Recombee.com db
+    # query = "SELECT setval('users_user_id_seq', :new_id)"
+    # db.session.execute(query, {'new_id': 671})
+    
 
 
 

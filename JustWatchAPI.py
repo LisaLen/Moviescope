@@ -1,22 +1,17 @@
 from justwatch import JustWatch
 
 def to_watch(movie_title, release_year):
-    '''constract dict with one buy and rent offers for ituns, google play, amazon, and showtime is cinema'''
+    '''constract dict with one buy and rent offers for ituns, google play, amazon, and showtime in cinema'''
 
     just_watch = JustWatch(country='US')
-
     results_by_multiple = just_watch.search_for_item(query=movie_title,
                                                      monetization_types=['buy', 'rent', 'cinema'])
-
-    #print(results_by_multiple)
-
     items = results_by_multiple['items']
 
     selected_items = list(filter(lambda x: x['title'].lower() == movie_title.lower()
                             and x['original_release_year'] == release_year, items))
 
     if len(selected_items) != 1:
-        print(selected_items)
         return 'Too many result'
        
     my_movie = selected_items[0]
@@ -24,9 +19,9 @@ def to_watch(movie_title, release_year):
     short_descr = my_movie['short_description']
     release_year = my_movie['original_release_year']
     runtime = my_movie['runtime']
-
     offers = my_movie['offers']
 
+    #take first offer for iTunes, Googleplay, Amazon
     check_dict = {'itunes_buy': False,
                  'itunes_rent': False,
                  'play_buy': False,
@@ -41,8 +36,7 @@ def to_watch(movie_title, release_year):
                   'runtime': runtime,
                   'buy': [], 'rent': [], 'cinema': None}
 
-
-################ TO GO BACK TO THIS PART - FILTER LIST WITH ONE LAMBDA##############################
+################ Optimization: TO GO BACK TO THIS PART - FILTER LIST WITH ONE LAMBDA##############################
 
     # my_offers_buy = list(filter(lambda offer_buy: offer_buy['monetization_type'] == 'buy' and 
     #     offer_buy['provider_id'] in (2, 3, 10), offers ))
@@ -68,7 +62,6 @@ def to_watch(movie_title, release_year):
 ################ ###################################################
 
     for offer in offers:
-
         if offer['monetization_type'] == 'buy':
             if offer['provider_id'] == 2 and not check_dict['itunes_buy']:
                 itunes_dict = {'provider': 'iTunes',

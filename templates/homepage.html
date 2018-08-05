@@ -7,31 +7,23 @@
 <li class="nav-item">
     <a class="nav-link" href='/wish-list'>Wish List</a>
 </li>
-<!-- <li class="nav-item">
-    <a class="nav-link" href='/recommendations'>Recom</a>
-</li> -->
-
 {% endblock %}
 
 {% block content %}
 <div class = 'container'>
     <p><h2>You May Like It</h2></p>
  <div class='row'>
-
         {% for recom_movie in recom_movies %}
         <div class='col-2'>
             <a href='/movie-page?imdb_id={{recom_movie['imdbID']}}'><img id = 'recom_img' src='{{recom_movie['Poster']}}'></a>
         </div>
         {% endfor %}
-    </div>
+ </div>
 </div>
 
-<!-- <table class="table table-hover table-dark">
-    <thead class="thead-lihjt"> -->
 <p><h2>My Movies</h2></p>
- <div class = 'container-fluid' >
+<div class = 'container-fluid' >
 <div class="table-wrapper-scroll-y" id='table'>
-    
 <table class='table table-hover' id='journal'>   
     <thead class="thead-dark" id='th_journal'>  
         <tr>   
@@ -48,37 +40,27 @@
             <th > </th>
         </tr>
     </thead>
-
     <tbody  id='tb_journal'>
-
     {% for movie_review in movies_reviews %}
     <tr id='tr_journal'>
         {% with %}
-        <!--  -->
         {% set movie = movie_review[0] %} 
         {% set review = movie_review[1] %}
         <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
         <td width='150'><a href=' /movie-page?imdb_id={{movie.imdb_id}}'>{{ movie.title}} </td>
         <td>{{ movie.usa_release_date }}</td>
         <td>{{ movie.plot }}</td>
-        
         <td>
         {% for genre in movie.genres %}
         {{ genre.genre_title }},
-        {% endfor %}</td>
-
+        {% endfor %}
+        </td>
         <td style='text-align:center'>{{movie.imdb_rating }}</td>
         <td  class='rating' width='70'>            
-
             {% for i in range (0, review.rating) %}
                 <span><i class="text-warning fas fa-star" style="font-size:7px"></i></span>
             {% endfor %}
-          
-
-
-
-
-           </td>
+        </td>
         <td  class='review' width='250'>{{review.review }}</td>
         <td class='date_review'>{{review.date_review }}</td>
 
@@ -95,12 +77,10 @@
         <!-- Modal content -->
         <div class="modal-dialog">
             <div class='modal-content'>
-                
                 <div class='modal-header'>
                     <h4 class='modal-title'> Edit your review for {{movie.title}}</h4>
-            <button type='button' class='close' data-dismiss='modal'>X</button>
-                    
-                    </div>
+                    <button type='button' class='close' data-dismiss='modal'>X</button>
+                </div>
                 <div class='modal-body'>
                 <p>
                     <form>
@@ -113,19 +93,17 @@
                     <button class='btn-modal' type='button' id='confirm-edit' data-dismiss='modal' >Confirm</button>
                     
                     </form>
-                        </p>
+                </p>
                 </div> <!-- end .model-body-->
             </div> <!-- end .model-content -->
         </div> <!--end .model-dialog  -->
         </div> <!--end .model -->
 
         <!-- END POPUP MODEL -->
-         </td> 
-        <td><label  type='button' id='deleteMovie' class='btn' value='{{ movie.movie_id }}'>Delete </label></td>
-
+        </td> 
+        <td value='{{ movie.movie_id }}'><label  type='button' id='deleteMovie' class='btn' value='{{ movie.movie_id }}'>Delete </label></td>
         {% endwith %}
     </tr>
-       
     {% endfor %}
     </tbody>    
 </table>
@@ -134,21 +112,10 @@
 </div>
 
 <link href='static/css/homepage.css' rel='stylesheet'>
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.css"/>
 
-<script src='http://code.jquery.com/jquery.js'></script>
-<script src ='/static/JS/edit_review.js'></script>
-
-<script src ='/static/JS/delete_from_journal.js'></script>
-<script src ='static/JS/homepage.js'></script>
-
-
- 
-<script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.18/datatables.min.js"></script>
-
-
-
-
+<script type="text/javascript" src='http://code.jquery.com/jquery.js'></script>
+<script type="text/javascript" src ='/static/JS/edit_review.js'></script>
+<script type="text/javascript" src ='/static/JS/delete_from_journal.js'></script>
 
 
 {% endblock %}

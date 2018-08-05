@@ -3,7 +3,6 @@
 from recombee_api_client.api_client import RecombeeClient
 from recombee_api_client.api_requests import *
 import json
-
 import os # to access OS environment variables
 
 client = RecombeeClient(os.environ['DB_NAME'],

@@ -6,21 +6,16 @@
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.3/css/star-rating.min.css" >
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
     <link href='static/css/base.css' rel='stylesheet'>
- 
-    
-    
+
     <title>{%block  title %} Title {% endblock %}</title>
 </head>
 <body>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.3/js/star-rating.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.3/js/star-rating.min.js"></script>
     
- 
-
-
 <nav class="navbar navbar-expand-md navbar-dark bg-dark">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
             <span class="navbar-toggler-icon"></span>
@@ -30,14 +25,11 @@
             <li class="nav-item active">
                 <a class="nav-link" class="nav-link" href="#" onclick="goBack()">Back</a>
            </li>
-
            {% block navbar1 %} {% endblock %}           
         </ul>
     </div>
     <div class="navbar-collapse collapse w-100 order-2 order-md-0 dual-collapse2">
         {% block navbar2 %} {% endblock %}     
-     
-     
     </div>
     <div class="navbar-collapse collapse w-100 order-3 order-md-0 dual-collapse2">
         {% block navbar3 %} {% endblock %}     
@@ -47,10 +39,8 @@
                 <p><a class="nav-link" href="/logout" ><span class="glyphicon glyphicon-log-out"></span> Log Out</a></p>
                 {% endif %}
              </li>
-          
         </ul>
     </div>
-   
 </nav>
  
 {% with messages = get_flashed_messages() %}
@@ -60,16 +50,11 @@
 <span>{{ message }} </span> 
 {% endfor %}
 
-
 {% endif %}
 {% endwith %}
 
 
-
-
-
-
-<script>
+<script type="text/javascript">
 function goBack() {
     window.history.back();
 }
