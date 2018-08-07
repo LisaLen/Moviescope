@@ -28,31 +28,65 @@
              
             <div class='row'>
                 {% if where_watch['buy'] %}
-                <div class='col' >
+                <div class='col offset-2' >
                     <h5 class='offer'> Buy: </h5>
                 {% for item in where_watch['buy'] %}
-                 <span><h5> <a href='{{ item['url'] }}'>{{item['provider']}}</a></h5></span>
-                <span><h5> Price: {{item['price']}} USD</h5></span>
+                {% if item['provider'] == 'Google Play' %}
+                <a href='{{ item['url'] }}'><img src="static/IMG/google-play-movies.jpg" height="42" width="42">
+                    <span class='price'>   {{ item['price'] }} USD</span></a><br><br>
+                {% endif %}
+
+                {% if item['provider'] == 'Amazon' %}
+                <a href='{{ item['url'] }}'><img src="static/IMG/amazon-video.jpg" height="42" width="42">
+                    <span class='price'>   {{ item['price'] }} USD</span></a><br><br>
+                {% endif %}
+
+                {% if item['provider'] == 'iTunes' %}
+                <a href='{{ item['url'] }}'><img src="static/IMG/apple-itunes.jpg" height="42" width="42">
+                    <span class='price'>   {{ item['price'] }} USD</span></a><br><br>
+                {% endif %}
                 {% endfor %}
                 {% endif %}
 
                 </div>
 
                 <div class='col'>
-{% if where_watch['rent'] %}
+                {% if where_watch['rent'] %}
                 <h5 class='offer'> Rent: </h5>
+                
                 {% for item in where_watch['rent'] %}
-                 <span><h5> <a href='{{ item['url'] }}'>{{ item['provider'] }}</a></h5></span>
-                <span><h5> Price: {{ item['price'] }} USD</h5></span>
+                {% if item['provider'] == 'Google Play' %}
+                <a href='{{ item['url'] }}'><img src="static/IMG/google-play-movies.jpg" height="42" width="42">
+                    <span class='price'>   {{ item['price'] }} USD</span></a><br><br>
+                {% endif %}
+
+                {% if item['provider'] == 'Amazon' %}
+                <a href='{{ item['url'] }}'><img src="static/IMG/amazon-video.jpg" height="42" width="42">
+                    <span class='price'>   {{ item['price'] }} USD</span></a><br><br>
+                {% endif %}
+
+                {% if item['provider'] == 'iTunes' %}
+                <a href='{{ item['url'] }}'><img src="static/IMG/apple-itunes.jpg" height="42" width="42">
+                    <span class='price'>   {{ item['price'] }} USD</span></a><br><br>
+                {% endif %}
                 {% endfor %}
                 {% endif %}
                 </div>
             </div>
+            <div class='row'>
+                <div class='col offset-2'>
             {% if where_watch['cinema'] %}
-                 <span><h5 class='offer'> <a href='{{ where_watch['cinema'] }}'>In theaters</a></h5></span>
+             <a href='{{ where_watch['cinema'] }}'><img src="static/IMG/fandangonow.jpg" height="42" width="42">
+                    <span class='price'>Watch in Theater</span></a>
+
+            {% else %}
+             <a href='https://www.fandangonow.com'><img src="static/IMG/fandangonow.jpg" height="42" width="42">
+                    <span class='price'> Check in Theater</span></a>
 
 
              {% endif %}
+         </div>
+     </div>
 
 
             

@@ -295,8 +295,6 @@ def add_new_movie():
     new_review = create_new_review(new_movie.movie_id, session.get('current_user'), review, rating, date_review)
     RecombeeAPI.send_new_rating_to_API(session.get('current_user'), imdb_id, rating)
 
-    flash ('movie was added')
-
     return redirect('/homepage')
 
 @app.route('/delete-from-joural.json')

@@ -39,18 +39,11 @@
         {% if session['current_user'] %}
         <!-- <span class="navbar-text">{{ session['current_user_name'] }}</span> -->
         <ul class="navbar-nav ml-auto navbar-right list-inline">
-            
-            <!-- <li class="nav-item">
-                <! <p id='user-name'> -->
-                
-                <!-- </p> -->
-            <!-- </li> --> 
-            <li class="navbar-text">{{ session['current_user_name'] }}</li>
+            <li class="navbar-text">{{ session['current_user_name'] }}
+            </li>
             <li class="nav-item">
             <a class="nav-link" href="/logout" ><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
-               
-             </li>
-            
+            </li>
         </ul>
         {% endif %}
     </div>
@@ -60,7 +53,7 @@
 {% if messages %}
 
 {% for message in messages %}
-<span>{{ message }} </span> 
+<div id='flash'>{{ message }} </div> 
 {% endfor %}
 
 {% endif %}

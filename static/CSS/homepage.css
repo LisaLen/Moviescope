@@ -36,14 +36,6 @@ background-color: rgb(220,220,220, 0.7);
     margin-left: 3px;
 }
 
-/*.modal-content{
-    background-image: url("round.png");
-}*/
-/*.modal-header{*/
-    /*background-color: gray;*/
-   /* height: 55px;
-    
-}*/
 
 .modal-title {
      font-weight: bold;
@@ -98,8 +90,8 @@ textarea {
     font-size: 2em;
 }
 #recom_img{
-    width: 180px;
-    height:290px;
+    width: 150px;
+    
 
 }
 

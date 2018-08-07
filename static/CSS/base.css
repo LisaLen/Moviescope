@@ -7,3 +7,10 @@
 color: white;
 font-weight: bold;
 }
+
+#flash{
+   font-weight: bold;
+   color: red;
+   /*border:1px solid red;*/
+   text-align: center;
+}
