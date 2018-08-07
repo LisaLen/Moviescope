@@ -3,7 +3,7 @@
 <link rel="stylesheet" type="text/css" href="movie-page.css">
 {% block navbar1 %}
 <li class="nav-item">
-    <a class="nav-link" href='/homepage'>My Journal</a>
+    <a class="nav-link" href='/homepage'>My Movies</a>
 </li>
 <li class="nav-item">
     <a class="nav-link" href='/add-movie'>Add Movie</a>
@@ -15,7 +15,7 @@
 
 {% block content %}
 <div class='container'>
-    <div class='row'>
+    <div class='row' id='movie-part'>
         <div class='col-4'>
             <img id='poster_img' src='{{ movie['Poster'] }}'><br>
             {% if rating %}
@@ -69,9 +69,8 @@
     </div>
 </div>   
 <div class='container'> 
-    <div class='row'>
-        <h2><strong>You May Like it</strong></h2>
-    </div>
+        <p id='recom' class="text-right font-weight-bold">You May Like it</p>
+  
     <div class='row'>
         {% for recom_movie in recom_movies %}
         <div class='col-2'>

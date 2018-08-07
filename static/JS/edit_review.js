@@ -4,10 +4,12 @@ function editReview(evt){
     let form = $(this).closest('form') // get edited review
     let rating =$(this).closest('tr').find('.rating');
     let review =$(this).closest('tr').find('.review');
+    console.log(review)
     let date_review =$(this).closest('tr').find('.date_review');
     let movie_id = form["0"]["0"].value;
-    let new_rating = form["0"][1].value;
-    let new_review = form["0"][2].value;
+    let new_review = form["0"][1].value;
+    let new_rating = form["0"][2].value;
+   
     let new_date_review;
 
     //update DB with new rating and review
@@ -19,7 +21,7 @@ function editReview(evt){
                                     date_review['0'].innerText = results['date_review'];
                                     alert('Review and rating have been updated');
                                 }else{
-                                    alert('ERROR: CANNOT DELETE MOVIE');
+                                    alert('ERROR: CANNOT UPDATE REVIEW');
                                 }
     });
 
@@ -32,7 +34,12 @@ function editReview(evt){
     };
 
     rating.append(rating_star);
-    review["0"].outerText = new_review;
+    
+    review.empty();
+    review.append(new_review)
+
+
+    // review["0"].outerText = new_review;
 }
 
 $(document).on('click','#confirm-edit', editReview);

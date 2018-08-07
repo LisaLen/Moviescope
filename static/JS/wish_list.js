@@ -4,8 +4,8 @@ $(document).on('click','#confirm-add_movie', function(evt){
    //checks, if selected movie exists in user's journal
     let form = $(this).closest('form'); // get edited review
     let imdb_id = form["0"]["0"].value;
-    let rating = form["0"][1].value;
-    let review = form["0"][2].value;
+    let review = form["0"][1].value;
+    let rating = form["0"][2].value;
     let new_date_review;
 
     //update DB with new rating and review

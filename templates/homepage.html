@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% block title %} Movie Journal {% endblock %}
+{% block title %} Moviescope:MyMovies {% endblock %}
 {% block navbar1 %}
 <li class="nav-item">
     <a class="nav-link" href='/add-movie'>Add Movie</a>
@@ -46,22 +46,22 @@
         {% with %}
         {% set movie = movie_review[0] %} 
         {% set review = movie_review[1] %}
-        <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
+        <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70'></td>
         <td width='150'><a href=' /movie-page?imdb_id={{movie.imdb_id}}'>{{ movie.title}} </td>
         <td>{{ movie.usa_release_date }}</td>
-        <td>{{ movie.plot }}</td>
+        <td width='70'>{{ movie.plot }}</td>
         <td>
         {% for genre in movie.genres %}
         {{ genre.genre_title }},
         {% endfor %}
         </td>
         <td style='text-align:center'>{{movie.imdb_rating }}</td>
-        <td  class='rating' width='70'>            
+        <td  class='rating' width='80'>            
             {% for i in range (0, review.rating) %}
                 <span><i class="text-warning fas fa-star" style="font-size:7px"></i></span>
             {% endfor %}
         </td>
-        <td  class='review' width='250'>{{review.review }}</td>
+        <td  class='review' width='200'>{{review.review }}</td>
         <td class='date_review'>{{review.date_review }}</td>
 
         <!-- Trigger/Open The Modal -->
@@ -82,18 +82,21 @@
                     <button type='button' class='close' data-dismiss='modal'>X</button>
                 </div>
                 <div class='modal-body'>
-                <p>
-                    <form>
+                 <form>
                     <input type='hidden' name='movie_id' value='{{movie.movie_id}}'>
-                    
-                    <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1" ><br >
-                    
-                   <textarea id='new_review' name='review' value=>{{ review.review }}</textarea><br>
-                   <button class='btn-modal' type='button'  data-dismiss='modal' >Cancel</button>
-                    <button class='btn-modal' type='button' id='confirm-edit' data-dismiss='modal' >Confirm</button>
-                    
-                    </form>
-                </p>
+                   <br>
+                   <br>
+                   <br>
+                   <br>
+                   <textarea class='new_review' name='review' value=>{{ review.review }}</textarea></p>
+                   <div class="d-inline-block">
+                       <input class="rating rating-loading" id='new_rating' type='number' name ='rating' value='{{ review.rating }}' data-min="1" data-max="5" data-step="1" >
+                   </div>
+                   <div class="d-inline-block" id='btns'>
+                       <button class='btn-modal' type='button'  data-dismiss='modal' >Cancel</button>
+                        <button class='btn-modal' type='button' id='confirm-edit' data-dismiss='modal' >Confirm</button>
+                     </div>
+                  </form>
                 </div> <!-- end .model-body-->
             </div> <!-- end .model-content -->
         </div> <!--end .model-dialog  -->

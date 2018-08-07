@@ -1,13 +1,9 @@
-body {
-   background-image: url("abstract-analog-art.jpg");*/
-    /*height: 30%;*/
-     background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
-   /*background-color: #cccccc;*/
-}
-
 .navbar-nav > li{
   padding-left:20px;
   padding-right:20px;
+}
+
+#user-name{
+color: white;
+font-weight: bold;
 }

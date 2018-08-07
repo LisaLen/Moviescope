@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block title %} Sign-In {% endblock %}
+
+{% block title %} Moviescope - Sign-In {% endblock %}
 
 {% block navbar3 %}
 <form action='/login' method='POST'>
@@ -18,26 +19,37 @@
 {% endblock %}
 {% block content %}
 <div class='container'>
-    <h1>Registration</h1>
-<form action='/sign-up' method='POST'>
+  <div class='row'>
+  <!-- <div class='col-4' id='registration'> -->
+<div class='col-8' id='welcome'>
+  <h1 id='moviescope'> Moviscope </h1>
+
+  <h2 id='statement'> Keeps track of films you watch.</h2>
+  <h2 id='statement'> Add reviews, ratings and compile your wishlist.</h2>
+
+</div>  
+<form class='col' id='registration' width action='/sign-up' method='POST'  >
+  <h1>Registration</h1>
   <div class="form-group">
-    <label for="inputEmail4">Email</label>
-    <input type="email" id ='email' class="form-control" placeholder="Email" name='email' style='width:300px' required>
+    <input type="email" id ='email' class="form-control" placeholder="Email" name='email' required>
   </div>
   <div class="form-group">
-    <label for="inputPassword4">Password</label>
-    <input type="password" class="form-control" placeholder="Password" name='password' style='width:300px' required>
+    <input type="password" class="form-control" placeholder="Password" name='password' required>
   </div>
   <div class="form-group">
-    <label for="inputFName">First Name</label>
-    <input type="text" class="form-control"  placeholder="First Name" name='fname' style='width:300px' required>
+    <input type="text" class="form-control"  placeholder="First Name" name='fname' required>
   </div>
   <div class="form-group">
-    <label for="inputLName">Last Name</label>
-    <input type="text" class="form-control" placeholder="Last Name" name='lname' style='width:300px' required>
+    <input type="text" class="form-control" placeholder="Last Name" name='lname' required>
   </div>
     <button type="submit" class="btn btn-primary">Sign Up</button>
 </form>
+
+<!-- </div> -->
+
+</div>
 </div> 
+   <link href='static/css/sign-in.css' rel='stylesheet'>
 
 {% endblock %}
+

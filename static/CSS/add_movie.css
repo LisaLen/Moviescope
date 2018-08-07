@@ -26,8 +26,23 @@ background-color: rgb(220,220,220, 0.7);
 }
 
 */
+body {
+   background-image: url("abstract-analog-art.jpg");
+    /*height: 30%;*/
+     background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+   background-color: #cccccc;
+}
 
+h2 {
+    font-family: :serif;
+}
 table { 
 opacity: 0.8;
+}
+
+.rating-md{
+    font-size: 2em;
 }
 

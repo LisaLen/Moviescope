@@ -2,7 +2,7 @@
 {% block title %} Movie Journal {% endblock %}
 {% block navbar1 %}
 <li class="nav-item">
-    <a class="nav-link" href='/homepage'>My Journal</a>
+    <a class="nav-link" href='/homepage'>My Movies</a>
 </li>
 <li class="nav-item">
     <a class="nav-link" href='/add-movie'>Add Movie</a>
@@ -11,7 +11,7 @@
 {% block content %}
 <p><h2>My Wish List</h2></p>
 <div style="overflow-x:auto">
-<table id='tb_wishlist'>   
+<table class='table table-hover' id='table'>   
     <thead id='th_wishlist'>     
         <th >Poster</th>
         <th >Movie Title</th>
@@ -26,7 +26,7 @@
     <tbody>
     {% for movie in wishlist %}
     <tr id='tr_journal'>
-        <td width='70' hight='100'><img src='{{ movie.poster_img }}' width='70' hight='100'></td>
+        <td ><img src='{{ movie.poster_img }}' width='70'></td>
         <td width='150'><a href=' /movie-page?imdb_id={{movie.imdb_id}}'>{{ movie.title}} </td>
         <td>{{ movie.usa_release_date }}</td>
         <td>{{ movie.plot }}</td>
@@ -54,10 +54,18 @@
                 <div class='modal-body'>
                 <form>
                     <input type='hidden' name='imdb_id' value='{{movie.imdb_id}}'>
-                    <input class="rating rating-loading" id='rating' type='number' name ='rating' value='0' data-min="1" data-max="5" data-step="1" ><br >
+                    <br>
+                    <br>
+                    <br>
+                    <br>
                     <textarea id='new_review' name='review' >Enter your review here</textarea><br>
+                    <div class="d-inline-block">
+                       <input class="rating rating-loading" id='rating' type='number' name ='rating' value='0' data-min="1" data-max="5" data-step="1" >
+                    </div>
+                    <div class="d-inline-block" id='btns'>
                     <button class='btn-modal' type='button'  data-dismiss='modal' >Cancel</button>
                     <button class='btn-modal' type='button' id='confirm-add_movie' data-dismiss='modal' >Confirm</button>
+                    </div>
                 </form>
                 </div> <!-- end .model-body-->
             </div> <!-- end .model-content -->

@@ -33,8 +33,8 @@ def login():
         if check_password(user.password, password):
             #stor user_id in session
             session['current_user'] = user.user_id
-            fname, lname = user.fname, user.lname
-            flash (f'Logged in as {fname} {lname}' )
+            session['current_user_name'] = (f'{user.fname} {user.lname}')
+            print(session['current_user_name'])
             return redirect('/homepage')
         else:
             flash('Wrong password')

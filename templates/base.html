@@ -5,10 +5,13 @@
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.css" rel="stylesheet">
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-star-rating/4.0.3/css/star-rating.min.css" >
    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
+   <link href="https://fonts.googleapis.com/css?family=Cinzel:700|Satisfy" rel="stylesheet">
     <link href='static/css/base.css' rel='stylesheet'>
+   
 
     <title>{%block  title %} Title {% endblock %}</title>
 </head>
+
 <body>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
@@ -33,13 +36,23 @@
     </div>
     <div class="navbar-collapse collapse w-100 order-3 order-md-0 dual-collapse2">
         {% block navbar3 %} {% endblock %}     
-        <ul class="navbar-nav ml-auto navbar-right">
+        {% if session['current_user'] %}
+        <!-- <span class="navbar-text">{{ session['current_user_name'] }}</span> -->
+        <ul class="navbar-nav ml-auto navbar-right list-inline">
+            
+            <!-- <li class="nav-item">
+                <! <p id='user-name'> -->
+                
+                <!-- </p> -->
+            <!-- </li> --> 
+            <li class="navbar-text">{{ session['current_user_name'] }}</li>
             <li class="nav-item">
-                 {% if session['current_user'] %}
-                <p><a class="nav-link" href="/logout" ><span class="glyphicon glyphicon-log-out"></span> Log Out</a></p>
-                {% endif %}
+            <a class="nav-link" href="/logout" ><span class="glyphicon glyphicon-log-out"></span> Log Out</a>
+               
              </li>
+            
         </ul>
+        {% endif %}
     </div>
 </nav>
  

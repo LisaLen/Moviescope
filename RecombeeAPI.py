@@ -54,6 +54,7 @@ def get_recommendations_for_user(user_id, recoms=6):
         recome_movies.append(recom_imdb)
     return recome_movies
 
+    
 def get_recommendations_for_user_item(imdb_id, user_id, recoms=6):
     '''returns list with 5 recommended movies(imdb_id) for given user and given movie'''
     # make API request and get response
@@ -68,6 +69,8 @@ def get_recommendations_for_user_item(imdb_id, user_id, recoms=6):
         recome_movies.append(recom_imdb)
 
     return recome_movies
+
+    
 
 if __name__ == '__main__':
 

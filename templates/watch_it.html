@@ -2,7 +2,7 @@
 {% block title %} Movie Journal {% endblock %}
 {% block navbar1 %}
 <li class="nav-item">
-    <a class="nav-link" href='/homepage'>My Journal</a>
+    <a class="nav-link" href='/homepage'>My Movies</a>
 </li>
 <li class="nav-item">
     <a class="nav-link" href='/add-movie'>Add Movie</a>
@@ -10,37 +10,86 @@
 {% endblock %}
 
 {% block content %}
+
 <div class='container'>
-    <div class='row'>
+
+    <div class='row' >
         <div class='col-4'>
-            <img src='{{ poster_img }}'>
+            <img id='poster_img' src='{{ poster_img }}'><br>
         </div>
-        <div class='col'>
-                <span><h1><a href='{{movie_url}}'>{{ where_watch['title'] }} ({{ where_watch['release_year'] }})</a></h1></span>
-                <span><h5>{{ where_watch['runtime'] }} min</h5></span> 
-                <div><h5>{{ where_watch['short_descr'] }} min</h5></div>
-                <br>
-                <br>
+        <div class='col-8' id='movie-info'>
+
+            <ul class="list-inline">
+                <li id='movietitle'><h1><h1><a href='{{movie_url}}'>{{ where_watch['title'] }}</a></h1></li>
+                <li><h3>({{ where_watch['release_year'] }})</h3></li>
+                <li><strong>{{ where_watch['runtime'] }} min</strong></li>                
+            </ul>
+            <p id='plot'><strong>{{ where_watch['short_descr'] }}</strong></p>
+             
+            <div class='row'>
                 {% if where_watch['buy'] %}
-                <h5> Buy: </h5>
+                <div class='col' >
+                    <h5 class='offer'> Buy: </h5>
                 {% for item in where_watch['buy'] %}
                  <span><h5> <a href='{{ item['url'] }}'>{{item['provider']}}</a></h5></span>
                 <span><h5> Price: {{item['price']}} USD</h5></span>
                 {% endfor %}
                 {% endif %}
-                <br>
-                <br>
-                {% if where_watch['rent'] %}
-                <h5> Rent: </h5>
+
+                </div>
+
+                <div class='col'>
+{% if where_watch['rent'] %}
+                <h5 class='offer'> Rent: </h5>
                 {% for item in where_watch['rent'] %}
                  <span><h5> <a href='{{ item['url'] }}'>{{ item['provider'] }}</a></h5></span>
                 <span><h5> Price: {{ item['price'] }} USD</h5></span>
                 {% endfor %}
                 {% endif %}
-                {% if where_watch['cinema'] %}
-                 <span><h5> <a href='{{ where_watch['cinema'] }}'>In theaters</a></h5></span>
-                {% endif %}
+                </div>
+            </div>
+            {% if where_watch['cinema'] %}
+                 <span><h5 class='offer'> <a href='{{ where_watch['cinema'] }}'>In theaters</a></h5></span>
+
+
+             {% endif %}
+
+
+            
+
+
+           
+        </div>
+    </div>
+</div>   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+       
+
+            
+
+
+                
+                
+                
+                
+                
+                
+               
         </div>
     </div>
 </div> 
+<link href='static/css/watch-it.css' rel='stylesheet'>
 {% endblock %}
