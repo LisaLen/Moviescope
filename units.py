@@ -7,7 +7,7 @@ def hash_password(password):
     # uuid is used to generate a random number
     salt = uuid.uuid4().hex
     return hashlib.sha256(salt.encode() + password.encode()).hexdigest() + ':' + salt
-    
+ 
 def check_password(hashed_password, user_password):
     '''checks if entered password is the same as stored one'''
     password, salt = hashed_password.split(':')
@@ -26,10 +26,10 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
                       usa_release_date=release_date,
                       poster_img=poster_img,
                       genres= [])   
-    
+
     #fetching existing genres in DB
     genres_tpl = db.session.query(Genre.genre_title).all()
-    
+
     #adding new genres to DB and add all genres to new movie
     for genre in genres:
         if (genre, ) not in genres_tpl: 
@@ -47,7 +47,7 @@ def create_new_movie(imdb_id, movie_url, imdb_rating, title, plot, release_date,
 
 def create_new_review(movie_id, user_id, review, rating, date_review):
     '''Creates new review row in DB, returns Review object'''
-    
+
     new_review = Review(movie_id=movie_id,
                         user_id=user_id,
                         review=review,

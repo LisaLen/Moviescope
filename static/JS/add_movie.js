@@ -126,7 +126,7 @@ function makeWishListUpdate(imdb_id){
 
 function addToWishlist(evt){
     // adding movie into wishlist of current user
-            
+        evt.preventDefault();
         let imdb_id = $('#imdbid').val();
 
         // if movie if not in DB, send ajax request to add movie into DB

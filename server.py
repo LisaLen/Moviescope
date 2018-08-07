@@ -28,7 +28,7 @@ def login():
 
     #query to get user object using email
     user = User.query.filter_by(email=email).first()
-               
+           
     if user:
         if check_password(user.password, password):
             #stor user_id in session
@@ -40,7 +40,7 @@ def login():
             flash('Wrong password')
             return redirect('/')
     else: 
-        flash ('Username doesn\'t exist')
+        flash('Username doesn\'t exist')
         return redirect('/')
 
 @app.route('/logout')
@@ -61,7 +61,7 @@ def check_email_in_db():
 @app.route('/sign-up', methods=['POST'])
 def register_new_user():
     '''create new user in db'''
- 
+
     email = request.form.get('email')
     user = User.query.filter_by(email=email).first()
     if not user:
@@ -75,7 +75,7 @@ def register_new_user():
 
         #add new user to DB at RecombeeAPI 
         RecombeeAPI.add_new_user_to_recombee(user_id)
-  
+
         flash('New user has been added. Please sign-in to continue')
         return redirect('/')
     else:
@@ -86,9 +86,9 @@ def register_new_user():
 def open_homepage():
     ''' Show homepage; show mivie list for a particular user''' 
 
-    if not session.get('current_user'): 
-        return redirect('/')  
-    
+    if not session.get('current_user'):
+        return redirect('/')
+
     recommendations = RecombeeAPI.get_recommendations_for_user(session['current_user'])
     recom_movies = []
 
