@@ -74,7 +74,7 @@ def register_new_user():
         db.session.commit()
 
         #add new user to DB at RecombeeAPI 
-        RecombeeAPI.add_new_user_to_recombee(user.user_id)
+        RecombeeAPI.add_new_user_to_recombee(new_user.user_id)
 
         flash('New user has been added. Please sign-in to continue')
         return redirect('/')
