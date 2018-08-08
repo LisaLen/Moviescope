@@ -1,0 +1,16 @@
+.navbar-nav > li{
+  padding-left:20px;
+  padding-right:20px;
+}
+
+#user-name{
+color: white;
+font-weight: bold;
+}
+
+#flash{
+   font-weight: bold;
+   color: red;
+   /*border:1px solid red;*/
+   text-align: center;
+}

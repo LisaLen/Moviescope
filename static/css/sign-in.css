@@ -1,0 +1,27 @@
+
+body {
+    background: url(app-entertainment-blur-ws.jpg) no-repeat center center fixed;
+   background-size: cover;
+}
+
+#registration{
+font-family: :serif;
+ padding-left: 20px;
+ padding-bottom: 20px;
+ font-weight: 500;
+
+ background-color: rgb(220,220,220, 0.85);
+    }
+
+#moviescope{
+    text-align: center;
+    font-family: 'Cinzel', serif;
+    font-weight: 700;
+    font-size: 50px;
+}
+
+#statement{
+    font-family: 'Satisfy', cursive;
+    text-align: center;
+   
+}
