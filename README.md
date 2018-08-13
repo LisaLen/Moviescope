@@ -40,9 +40,21 @@ Dataset: MovieLens
 ---
 ### Installation
 To use Moviescope:
-  * Install PostgreSQL (Mac OSX)
+  * Install PostgreSQL
 
 Clone or fork this repo:  
 ```sh
 https://github.com/LisaLen/Moviescope.git
 ```
+Create and activate a virtual environment inside your Moviescope directory:
+```sh
+virtualenv env
+source env/bin/activate
+```
+Install the dependencies:
+```sh
+virtualenv env
+pip3 install -r requirements.txt
+```
+Obtain API keys to use OpenDB API and Recombee API
+Save your API keys in a file called secrets.sh using this format:
