@@ -4,9 +4,9 @@ Moviescope is a personal movie journal, which helps users to track films they ha
 
 
 ## Contents
-  * [Technology Stack](https://github.com/LisaLen/Moviescope/new/master?readme=1#technology-stack)
-  * [Features](https://github.com/LisaLen/Moviescope/new/master?readme=1#features)
-  * [Installation](https://github.com/LisaLen/Moviescope/new/master?readme=1#installation)
+  * [Technology Stack](https://github.com/LisaLen/Moviescope/blob/master/README.md#technology-stack)
+  * [Features](https://github.com/LisaLen/Moviescope/blob/master/README.md#features)
+  * [Installation](https://github.com/LisaLen/Moviescope/blob/master/README.md#installation)
 
 ---
 ### Technology Stack:
