@@ -39,7 +39,7 @@ Dataset: MovieLens
 
 ---
 ### Installation
-To use Moviescope:
+To run Moviescope:
   * Install PostgreSQL
 
 Clone or fork this repo:  
@@ -58,3 +58,21 @@ pip3 install -r requirements.txt
 ```
 Obtain API keys to use OpenDB API and Recombee API  
 Save your API keys in a file called ```secrets.sh``` using this format:
+```sh
+export DB_NAME="RECOMBEE_DB_NAME"
+export SECRET_TOKEN="RECOMBEE_SECRET_TOKEN"
+export OMDB_API_KEY='OMDB_API_KEY'
+```
+Source your keys from your ```secrets.sh``` file into your virtual environment:
+```sh
+source secrets.sh
+```
+
+Set up the database:
+```sh
+createdb journal
+python  -i model.py
+db.create_all()
+set_val_user_id()
+```
+
