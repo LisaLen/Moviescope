@@ -6,7 +6,7 @@ Moviescope is a personal movie journal, which helps users to track films they ha
 ## Contents
   * [Technology Stack](https://github.com/LisaLen/Moviescope/new/master?readme=1#technology-stack)
   * [Features](https://github.com/LisaLen/Moviescope/new/master?readme=1#features)
-  * Installation
+  * [Installation](https://github.com/LisaLen/Moviescope/new/master?readme=1#installation)
 
 ---
 ### Technology Stack:
@@ -33,8 +33,16 @@ Dataset: MovieLens
           Recommendations on the Movie page consider the currently selected movie as well as the user's general movie preferences.  
         ![alt text](https://github.com/LisaLen/Moviescope/blob/master/readme_img/recom2.jpg)  
    * Wishlist page collects movies user saved to watch in the future. User may rate movie and add to personal journal, find watch options or delete movie from this list  
-   ![alt text](https://github.com/LisaLen/Moviescope/blob/master/readme_img/wishlist.PNG)
-   
+   ![alt text](https://github.com/LisaLen/Moviescope/blob/master/readme_img/wishlist.PNG)  
    * On Watch It page user may see offers from three most popular providers or link to showtimes in theaters.
-    ![alt text](https://github.com/LisaLen/Moviescope/blob/master/readme_img/watchit.jpg)
- 
+    ![alt text](https://github.com/LisaLen/Moviescope/blob/master/readme_img/watchit.jpg) 
+
+---
+### Installation
+To use Moviescope:
+  * Install PostgreSQL (Mac OSX)
+
+Clone or fork this repo:  
+```sh
+https://github.com/LisaLen/Moviescope.git
+```
