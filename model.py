@@ -141,8 +141,19 @@ class WishList(db.Model):
                 f'<user_id = self.user_id>'
                 f'<movie_id = self.movie_id>')
 
-
 def set_val_user_id():
+        """Set value for the next user_id after seeding database - for testing purposes"""
+
+        # Get the Max user_id in the database
+        result = db.session.query(func.max(User.user_id)).one()
+        #max_id = int(result[0])
+      
+        # Set the value for the next user_id to be max_id + 1
+        query = "SELECT setval('users_user_id_seq', :new_id)"
+        db.session.execute(query, {'new_id': 672})
+        db.session.commit()
+
+def set_val_user_id_test():
         """Set value for the next user_id after seeding database - for testing purposes"""
 
         # Get the Max user_id in the database
@@ -219,7 +230,7 @@ def example_data():
     db.session.add_all([review1, review2, review3, review4, genre_test1, genre_test2])
     db.session.commit()
 
-    set_val_user_id()
+    set_val_user_id_test()
 
 
 
