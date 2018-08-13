@@ -56,5 +56,5 @@ Install the dependencies:
 virtualenv env
 pip3 install -r requirements.txt
 ```
-Obtain API keys to use OpenDB API and Recombee API
-Save your API keys in a file called secrets.sh using this format:
+Obtain API keys to use OpenDB API and Recombee API  
+Save your API keys in a file called ```secrets.sh``` using this format:
