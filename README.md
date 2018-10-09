@@ -77,6 +77,6 @@ set_val_user_id()
 ```
 Run the app:
 ```sh
-python server.py
+python3 server.py
 ```
 You can now navigate to 'localhost:5000/' to access Moviescope.
